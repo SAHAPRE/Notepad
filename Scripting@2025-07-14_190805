@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Directory to clean
+DIR="/path/to/your/folder"
+
+# Delete files older than 30 days
+find "$DIR" -type f -mtime +30 -delete
+
+
+mysql -u root -p
+
+mysql --user=$DB_USER --password=$DB_PASSWD $DB_NAME 
+
+
+
+DATE  CPU  MEM SERVER NAME
+#!/bin/bash
+
+# Set environment variables explicitly
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+export SHELL=/bin/bash
+export PATH
+
+# MySQL Credentials
+DB_USER="root"
+DB_PASS="123"
+DB_NAME="company_A"
+Server_name=75
+
+# Full path for commands
+TOP_CMD="/usr/bin/top"
+FREE_CMD="/usr/bin/free"
+DF_CMD="/bin/df"
+MYSQL_CMD="/usr/bin/mysql"
+
+# Collect CPU usage (percent)
+CPU=$($TOP_CMD -n1 | sed -n '3p'| cut -d, -f1 | cut -d: -f2 | cut -d' ' -f2)
+
+# Collect Memory usage (percent)
+Memory=$($FREE_CMD -g | sed -n '2p'| awk '{print $3}')
+
+# Collect Disk usage (percent)
+Disk=$($DF_CMD -kh | sed -n '4p' | awk '{print $3}' | cut -d'G' -f1)
+# Current timestamp
+Date=$(date "+%Y-%m-%d %H:%M:%S")
+
+# Insert metrics into MySQL database
+$MYSQL_CMD -u$DB_USER -p$DB_PASS $DB_NAME -e "
+INSERT INTO MONITORING (Date, CPU, Memory, Disk, Server_name)
+VALUES ('$Date', '$CPU', '$Memory', '$Disk', '$Server_name');
+
+
+

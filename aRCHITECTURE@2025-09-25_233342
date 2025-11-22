@@ -1,0 +1,7 @@
+for 3 tier architecture, we have webservers, applications server,and database server.
+
+webservers take requests to hit our lb through firewall distributes the load among aapplication server and later application are connected to different database and 
+caching servers like redis and also we use mysql which is master slave. 
+ 
+webservers where web service use to run and their app like django.
+ 

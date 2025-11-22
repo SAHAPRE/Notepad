@@ -1,0 +1,42 @@
+scp is not getting connected, what can be reason:
+
+1.ssh port is not open
+2.permissions has not been given to the user (in case i don't have overall permission, only read is there)
+3.hostname is not correct
+4.ip is not correct ,path is wrong, 
+5.server is down
+6.need to check with ping
+
+ 1995  pwd
+ 1996  telnet 10.0.0.9 22
+ 1997  ping 10.0.0.9
+ 1998  ls
+ 1999  curl ifconfig.me=
+ 2000  ifconfig
+
+  ssh connection:
+  
+  first will check ssh is installed in  remote server or not
+  if not, will installed
+  will check status from sshd
+  and after that if we want to do passwordless login then will first generate the keys from ssh-keygen
+  after generation of keys, we will keep the private keys with ourselves and share the public keys to the users whose server we wish to connect. 
+  once, they install the public keys on their side, we can connect them using private keys.
+  
+  remote server me authorized keys k ander public key copy karte hai.
+  
+  ssh connectivity:\\
+
+we can install ssh
+systemctl status ssh
+port is open or not by telnet command
+we will check firewall is open or not in remote server using telnet
+
+
+The du (disk usage) command measures the disk space occupied by files or directories.
+ By default, it measures the current directory and all its subdirectories, printing totals in blocks for each, with a grand total at the bottom.
+ 
+ 
+ df -kh ->
+  The df command displays the amount of disk space available on the filesystem with each file name's argument.
+					

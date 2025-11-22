@@ -1,0 +1,108 @@
+
+
+
+
+
+
+
+  CI    continuous integration
+  CD1   continuuous delivery
+  CD2   continuous deployment
+  
+  #########################################################
+  
+  Branch strategies
+  
+  dev1  feauture1
+  dev2  feauture2              ------>     develop     ------> release/qa    -------> master
+  dev3  feauture3
+  
+  #################################################
+  Environment 
+   
+ 
+   
+   
+  developer environment       LB(service)  POD Deployment DB REDIS Monitoring ECR repo  namespace-dev             dev-filpkart.com
+  stage/QA/preprod            LB(service)  POD Deployment DB REDIS Monitoring ECR repo  namespace-stage           stg-filpkart.com
+  prod                        LB(service)  POD Deployment DB REDIS Monitoring ECR repo  namespace-prod            flipkart.com
+  
+  ###################################################
+  
+  Test cases
+  
+  dev   unit testing, build, deploy
+  
+  stage  sonarqube , integration testing , UI testing, manual testing  (Tester team)
+  
+  Prod QA analysis post deployment
+  
+  ##############################################
+  
+  
+  
+  DEV PASS --- > UAT PASS ----> Prod deployment
+ 
+  
+  feature1 ,2,3 (unit test case)----> PR raise kr diye------> merge ----> develop ----> merge --->release----> UAT approval(QA approval)---> merge to master -----Production Jenkins deploy 
+  
+  
+  
+  
+  
+  dev          Git pull , unit test case , 
+  
+  
+  
+  
+  
+  
+  
+  unit test  - Python / bash script execute 
+  
+  
+  pipeline {
+  agent any
+  cleanWS( build 5)
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        git url: 'https://github.com/your-org/your-repo.git', branch: 'main'
+      }
+    }
+
+    stage('Unit') {
+      steps {
+	    sh 'copy /var/lib/jenkins/test .'
+        sh 'sh unit_test.sh'
+      }
+    }
+	    stage('BUILD') {
+      steps {
+	    sh 'copy /var/lib/jenkins/test .'
+        sh 'sh unit_test.sh'
+      }
+    }
+	
+
+post {
+
+   on-failure {
+       mail prernasaha@gmail.com
+   }
+}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

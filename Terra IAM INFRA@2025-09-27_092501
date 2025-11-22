@@ -1,0 +1,43 @@
+provider "aws" {
+  region = "ap-south-1"
+
+}
+
+resource "aws_iam_user""root" {
+  name = "root-user"
+}
+
+resource "aws_iam_access_key""root_access_key" {
+  user = aws_iam_user.root.name
+}
+
+
+output "access_key_id" {
+  value       = aws_iam_access_key.root_access_key.id
+  description = "The Access Key ID for the example IAM user"
+}
+
+output "iam_user_name" {
+  value       = aws_iam_user.root.name
+  description = "Iam user name"
+}
+
+output "secret_access_key" {
+  value       = aws_iam_access_key.root_access_key.secret
+  description = "The Secret Access Key for the example IAM user"
+  sensitive   = true
+}
+
+resource "aws_secretmanager_secret" "key2"{
+name-"key-for-i-am-user"
+description = "Access key ID and secret for example IAM user"
+}
+
+# Store the IAM user access key ID and secret in the Secrets Manager secret
+resource "aws_secretsmanager_secret_version" "example_secret_version" {
+  secret_id     = aws_secretsmanager_secret.example_secret.id
+  secret_string = jsonencode({
+    access_key_id     = aws_iam_access_key.example_access_key.id
+    secret_access_key = aws_iam_access_key.example_access_key.secret
+  })
+}

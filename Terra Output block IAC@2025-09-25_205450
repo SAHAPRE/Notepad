@@ -1,0 +1,133 @@
+In Terraform, the `output` block is used to display values after applying the configuration. You can use outputs to display information about 
+resources you created, such as an S3 bucket name, an IAM user ARN, or any computed values that you need to reference outside of Terraform.
+
+Here’s an example of how to use an `output` block in a Terraform script:
+
+### Example: Create an IAM user and display its access key information using `output` block.
+
+Let's say we want to create an IAM user, generate access keys for the user, and then use an `output` block to display the access key ID and the 
+ui'secret access key.
+
+### Full Terraform Script with Output Block (`main.tf`):
+
+```hcl
+provider "aws" {
+  region = "us-west-2"  # Specify your AWS region
+}
+
+# Create IAM User
+resource "aws_iam_user" "example_user" {
+  name = "example-user"  # Replace with your desired IAM user name
+}
+
+# Create IAM Access Key for the User
+resource "aws_iam_access_key" "example_access_key" {
+  user = aws_iam_user.example_user.name
+}
+
+# Create a Secret in AWS Secrets Manager to store the access keys
+resource "aws_secretsmanager_secret" "example_secret" {
+  name        = "example-iam-user-access-keys"
+  description = "Access key ID and secret for example IAM user"
+}
+
+# Store the IAM user access key ID and secret in the Secrets Manager secret
+resource "aws_secretsmanager_secret_version" "example_secret_version" {
+  secret_id     = aws_secretsmanager_secret.example_secret.id
+  secret_string = jsonencode({
+    access_key_id     = aws_iam_access_key.example_access_key.id
+    secret_access_key = aws_iam_access_key.example_access_key.secret
+  })
+}
+
+# Output the IAM Access Key ID and Secret Access Key
+output "access_key_id" {
+  value = aws_iam_access_key.example_access_key.id
+  description = "The Access Key ID for the example IAM user"
+}
+
+output "secret_access_key" {
+  value = aws_iam_access_key.example_access_key.secret
+  description = "The Secret Access Key for the example IAM user"
+}
+
+output "iam_user_name" {
+  value = aws_iam_user.example_user.name
+  description = "The IAM username"
+}
+```
+
+### Explanation:
+
+1. **IAM User Creation**: The `aws_iam_user` resource creates an IAM user named `example-user`.
+2. **IAM Access Key Creation**: The `aws_iam_access_key` resource generates an access key (both `id` and `secret`) for the IAM user.
+3. **Secrets Manager Secret**: The `aws_secretsmanager_secret` resource creates a new secret to store the IAM access key information.
+4. **Output Block**: The `output` block is used to display information about resources after Terraform has been applied:
+   - `access_key_id`: Displays the IAM access key ID.
+   - `secret_access_key`: Displays the IAM secret access key.
+   - `iam_user_name`: Displays the IAM username.
+
+### How to Use the Output:
+
+After running the Terraform script and applying the configuration, Terraform will display the outputs in the terminal. Here’s how to use it:
+
+1. **Initialize Terraform**:
+   ```bash
+   terraform init
+   ```
+
+2. **Plan the Terraform execution**:
+   ```bash
+   terraform plan
+   ```
+
+3. **Apply the configuration**:
+   ```bash
+   terraform apply
+   ```
+
+   When you apply the Terraform configuration, the outputs defined in the script will be displayed in the terminal.
+
+   Example output:
+   ```bash
+   Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
+
+   Outputs:
+
+   access_key_id = "AKIAIOSFODNN7EXAMPLE"
+   secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+   iam_user_name = "example-user"
+   ```
+
+### Accessing Outputs Programmatically:
+If you need to access these outputs from another Terraform configuration, you can use the `terraform output` command:
+
+```bash
+terraform output access_key_id
+```
+
+This will display the `access_key_id` value after applying the configuration.
+
+### Storing Outputs in Variables for Other Uses:
+If you want to use the outputs in another Terraform configuration, you can refer to them using a `terraform_remote_state` data source. Here’s an example:
+
+```hcl
+data "terraform_remote_state" "example" {
+  backend = "s3"
+  config = {
+    bucket = "my-terraform-state"
+    key    = "state.tfstate"
+    region = "us-west-2"
+  }
+}
+
+output "access_key_id_from_remote" {
+  value = data.terraform_remote_state.example.outputs.access_key_id
+}
+```
+
+This would allow you to reference the outputs from a different configuration or environment.
+
+### Summary:
+- The `output` block in Terraform is a way to expose and display values after applying your Terraform configuration.
+- Outputs can display values from resources like access keys, bucket names, or other important resource information.

@@ -1,0 +1,104 @@
+ 1591  kind create cluster
+ 1592  kubectl cluster-info dump'
+
+ 1593  kubectl cluster-info dump
+ 1594  ps aux
+ 1595  ps aux |kubectl
+ 1596  docker start kind-control-plane
+ 1597  kind create cluster
+ 1598  docker ps
+ 1599  kind cluster-info
+ 1600  kubectl cluster-info --context
+ 1601  kubectl
+ 1602  kubeadm
+ 1603  kubectl --version
+ 1604  kubectl version --client
+ 1605  kubectl version
+ 1606  kubectl get nodes
+ 1607  nano config.yaml
+ 1608  nano config.yam
+ 1609* kind create cluster --name  --config .yaml --retain --verbosity 9
+ 1610  kind create cluster --name my-cluster --config kind-cluster.yaml --retain --verbosity 9
+ 1611  nano kind-cluster.yaml
+ 1612  kind create cluster --name my-cluster --config config.yaml --retain --verbosity 9
+ 1613  nano kind-cluster.yaml
+ 1614  kind create cluster --name my-cluster --config config.yaml --retain --verbosity 9
+ 1615  kubectl get nodes
+ 1616  kubectl config delete cluster my-cluster
+ 1617  nano worker-cluster.yaml
+ 1618  nano kind-cluster.yaml
+ 1619  nano worker-cluster.yaml
+ 1620  kind create cluster --name worker-cluster --config config.yaml --retain --verbosity 9
+ 1621  docker ps -a | grep kind
+ 1622  sudo systemctl restart docker
+ 1623  kind delete cluster --name worker-cluster
+ 1624  kind delete cluster --name my-cluster
+ 1625  docker ps -a | grep kind
+ 1626  kind create cluster --name worker-cluster --config config.yaml --retain --verbosity 9
+ 1627  docker system df
+ 1628  docker images
+ 1629  docker delete image myflaskapp_flask
+ 1630  docker rm image myflaskapp_flask
+ 1631  docker rmi image myflaskapp_flask
+ 1632  docker rmi myflaskapp_flask:latest
+ 1633  docker rmi sonatype/nexus3:latest
+ 1634  docker rm 1b131703e89d
+ 1635  docker rmi sonatype/nexus3:latest
+ 1636  docker rmi mysql:5.7
+ 1637  docker rm 8228eab53fce
+ 1638  docker rmi mysql:5.7
+ 1639  docker rmi sonatype/nexus3
+ 1640  docker rmi sonatype/nexus3:latest
+ 1641  docker images
+ 1642  docker rmi webapp12:1.0.23
+ 1643  docker rm b9645ca4a473
+ 1644  docker rmi webapp12:1.0.23
+ 1645  docker rmi webapp:1.0.1
+ 1646  docker rm 7f343d8f7d91
+ 1647  docker rmi webapp:1.0.1
+ 1648  sudo systemctl restart docker
+ 1649  kind delete cluster --name worker-cluster
+ 1650  docker ps -a | grep kind
+ 1651  kind create cluster --name worker-cluster --config config.yaml --retain --verbosity 9
+ 1652  docker exec --privileged worker-cluster-worker mkdir -p /
+ 1653  docker start b450430336bc6cd81366116ddbe19f08d031d9c77c6722e737502f9b2fca8f04
+ 1654  kind create cluster --name worker-cluster --config config.yaml --retain --verbosity 9
+ 1655  docker ps -a | grep kind
+ 1656  kind delete cluster --name worker-cluster
+ 1657  docker ps -a | grep kind
+ 1658  kind create cluster --name worker-cluster --config config.yaml --retain --verbosity 9
+ 1659  docker info | grep -i cgroup
+ 1660  sudo mkdir -p /etc/docker
+ 1661  cat <<EOF | sudo tee /etc/docker/daemon.json
+{
+  "exec-opts": ["native.cgroupdriver=systemd"]
+}
+EOF
+
+ 1662  sudo systemctl restart docker
+ 1663  kind delete cluster --name worker-cluster
+ 1664  kind create cluster --name worker-cluster --config kind-cluster.yaml --verbosity 9
+ 1665  docker ps -a | grep kind
+ 1666  kind get nodes
+ 1667  kubectl get nodes -o wide
+ 1668  history
+
+
+ 1596  docker ps
+ 1597  kubectl version --client
+ 1598  kind create cluster
+ 1599  docker ps -a | grep kind
+ 1600  kind delete cluster --name worker-cluster
+ 1601  kind delete cluster --name kind-control-plane
+ 1602  kind create cluster --name worker-cluster --config kind-cluster.yaml --verbosity 9
+ 1603  kind create cluster --name my-cluster --config config.yaml --retain --verbosity 9
+ 1604  kubectl get nodes
+ 1605  docker ps -a | grep kind
+ 1606  kind delete cluster --name kind-control-plane
+ 1607  docker ps -a | grep kind
+ 1608  kind delete cluster --name my-cluster-control-plane
+ 1609  kind delete cluster --name my-cluster-worker
+ 1610  kind delete cluster --name kind-control-plane
+ 1611  docker ps -a | grep kind
+ 1612  kubectl get nodes
+ 1613  history

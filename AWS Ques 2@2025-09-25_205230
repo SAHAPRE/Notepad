@@ -1,0 +1,166 @@
+Perfect 👍 Let’s make a **mock Q\&A style cheat sheet** for AWS interview prep (4 years experience).
+
+---
+
+# 🚀 AWS Interview Q\&A Cheat Sheet (4 Years Experience)
+
+---
+
+## 🔹 **EC2**
+
+**Q1. Difference between On-Demand, Reserved, and Spot Instances?**
+
+* **On-Demand** → pay as you go, flexible, no commitment.
+* **Reserved** → 1/3 year commitment, cheaper, good for steady workloads.
+* **Spot** → unused capacity, very cheap, but can be terminated anytime.
+| Feature     | On-Demand            | Reserved                    | Spot                               |
+| ----------- | -------------------- | --------------------------- | ---------------------------------- |
+| Pricing     | Highest              | Medium (up to 72% off)      | Lowest (up to 90% off)             |
+| Commitment  | None                 | 1–3 years                   | None                               |
+| Reliability | High                 | High                        | Low (can be interrupted)           |
+| Best For    | Short-term, dev/test | Long-term, steady workloads | Fault-tolerant, flexible workloads |
+
+
+**Q2. If an Auto Scaling EC2 fails health check, what happens?**
+
+* ASG will terminate it and launch a replacement automatically.
+
+---
+
+## 🔹 **VPC & Networking**
+
+**Q3. Difference between Security Groups and NACLs?**
+
+* **Security Group** → stateful, instance-level, allows rules only.
+* **NACL** → stateless, subnet-level, allows & denies rules.
+
+**Q4. NAT Gateway vs Internet Gateway?**
+
+* **IGW** → provides internet access to **public subnets**.
+* **NAT Gateway** → allows **private subnets** to reach internet (for updates, downloads) but blocks inbound traffic.
+
+---
+
+## 🔹 **Storage**
+
+**Q5. Difference between S3, EBS, and EFS?**
+
+* **S3** → object storage, unlimited, used for backups/data lake.
+* **EBS** → block storage, attached to single EC2, persistent.
+* **EFS** → shared file storage, multiple EC2s can mount.
+
+**Q6. How do you secure an S3 bucket for VPC-only access?**
+
+* Use **VPC Endpoint + Bucket Policy** to allow access only from that VPC.
+
+---
+
+## 🔹 **Load Balancing & Scaling**
+
+**Q7. Difference between ALB, NLB, and CLB?**
+
+* **ALB** → Layer 7, HTTP/HTTPS, supports routing rules.
+* **NLB** → Layer 4, TCP/UDP, ultra-low latency, millions of req/sec.
+* **CLB** → Legacy, supports basic Layer 4/7, not recommended.
+
+**Q8. How to configure SSL on ALB?**
+
+* Create/Import cert in **ACM**, attach it to ALB listener (HTTPS:443).
+
+---
+
+## 🔹 **Databases**
+
+**Q9. Multi-AZ vs Read Replica in RDS?**
+
+* **Multi-AZ** → HA, synchronous replication, failover support.
+* **Read Replica** → scalability, async replication, used for reads.
+
+**Q10. DynamoDB vs RDS?**
+
+* **DynamoDB** → NoSQL, key-value, serverless, scales automatically.
+* **RDS** → SQL, relational, managed but not serverless.
+
+---
+
+## 🔹 **IAM & Security**
+
+**Q11. IAM Role vs User?**
+
+* **User** → permanent identity for humans/apps.
+* **Role** → temporary credentials, assumed by users/services.
+
+**Q12. What is STS AssumeRole?**
+
+* Used for temporary access (cross-account access or limited-time privilege).
+
+---
+
+## 🔹 **Monitoring & Ops**
+
+**Q13. Difference between CloudWatch Logs, Metrics, and Alarms?**
+
+* **Logs** → raw event logs (EC2, Lambda).
+* **Metrics** → numeric time-series (CPU, memory).
+* **Alarms** → trigger actions based on metric thresholds.
+
+**Q14. How would you troubleshoot an EC2 not connecting to internet?**
+
+* Check: SG, NACL, Route Table, Subnet (public/private), NAT/IGW, DNS settings.
+
+---
+
+## 🔹 **Scenario-Based**
+
+**Q15. Your ALB latency is high, how do you troubleshoot?**
+
+* Check target health (unhealthy targets slow response).
+* Review scaling policy (not enough instances).
+* Analyze CloudWatch metrics (5xx errors, latency trends).
+* Look into app-level bottlenecks.
+
+**Q16. S3 bucket is public but file still not accessible. Why?**
+
+* Block Public Access enabled.
+* Missing bucket policy or object ACL.
+* Signed URL requirement.
+
+**Q17. RDS failover happened but app still failing to connect. Why?**
+
+* App using IP instead of endpoint (DNS not updated).
+* DNS caching at app layer.
+* Failover taking longer than expected.
+
+---
+
+## 🔹 **Cost Optimization**
+
+**Q18. How do you reduce EC2 costs?**
+
+* Use **Reserved Instances/Savings Plans** for steady workloads.
+* Use **Spot Instances** for fault-tolerant workloads.
+* Rightsize instances (CloudWatch + Trusted Advisor).
+* Turn off unused resources.
+
+**Q19. Savings Plans vs Reserved Instances?**
+
+* **Savings Plans** → flexible (apply to any instance family/region).
+* **Reserved Instances** → tied to specific type/region but may save more.
+
+---
+
+## 🔹 **Advanced**
+
+**Q20. Difference between SQS Standard and FIFO queues?**
+
+* **Standard** → unlimited throughput, at-least-once delivery, unordered.
+* **FIFO** → ordered, exactly-once processing, limited throughput.
+
+**Q21. Route 53 Routing Policies?**
+
+* **Simple** → single record.
+* **Weighted** → split traffic (e.g., 70%-30%).
+* **Failover** → active/passive setup.
+* **Geolocation** → based on user location.
+
+---

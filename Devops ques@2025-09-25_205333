@@ -1,0 +1,137 @@
+Sure! Here's a **sample mock interview Q\&A** for a **3.5-year experienced DevOps Engineer**, targeting companies like **Alstom** that typically look for solid fundamentals in CI/CD, scripting, cloud (AWS), containers, and troubleshooting.
+
+---
+
+## 🧪 MOCK INTERVIEW Q\&A — DEVOPS ENGINEER (3.5 YRS)
+
+---
+
+### ✅ **Q1. Tell me about your current project and your role.**
+
+**Answer:**
+I'm currently working on a microservices-based application deployed on AWS EKS. My role involves setting up and maintaining CI/CD pipelines using 
+Jenkins, containerizing applications with Docker, deploying using Helm charts to Kubernetes, and ensuring monitoring/logging using Prometheus and 
+Grafana. I also manage secrets using AWS Secrets Manager and store artifacts in Nexus.
+
+---
+### ✅ **Q2. How is your Jenkins pipeline structured?**
+
+**Answer:**
+We use a declarative pipeline with multiple stages:
+
+* **Build**: Node.js/Maven build
+* **Test**: Unit tests, linting
+* **Code Quality**: SonarQube scan
+* **Docker**: Image build and push to ECR
+* **Deploy**: Helm deployment to EKS
+
+We use multi-branch pipelines with separate stages for `develop`, `release`, and `main` branches.
+
+---
+
+### ✅ **Q3. How do you implement rollback in Jenkins?**
+
+**Answer:**
+We store all build artifacts and Docker images with version tags. For rollback:
+
+* We identify the last successful build using Jenkins API or job history
+* Retrieve the corresponding artifact or image from Nexus/ECR
+* Redeploy it using Helm with the specific image tag
+
+We also use `helm rollback` for EKS deployments when needed.
+
+---
+
+### ✅ **Q4. How do you manage secrets securely in your pipeline?**
+
+**Answer:**
+We use **AWS Secrets Manager** to store sensitive credentials. Jenkins pulls secrets via `withCredentials` block or through secure environment variables. In Kubernetes, secrets are mounted as volumes or environment variables with access controlled via RBAC.
+
+---
+
+### ✅ **Q5. What is the difference between ConfigMap and Secret in Kubernetes?**
+
+**Answer:**
+
+* **ConfigMap** stores non-sensitive configuration data (e.g., log level, URLs)
+* **Secret** stores sensitive data (e.g., passwords, API keys)
+  Both can be mounted as volumes or exposed as environment variables. Secrets are base64-encoded and encrypted at rest with KMS.
+
+---
+
+### ✅ **Q6. A pod is in `CrashLoopBackOff`. How do you troubleshoot?**
+
+**Answer:**
+
+* Check logs: `kubectl logs <pod-name>`
+* Describe pod: `kubectl describe pod <pod-name>`
+* Validate readiness/liveness probes
+* Check resource limits (`OOMKilled`)
+* Review Docker image, command overrides, and missing config/env
+
+---
+
+### ✅ **Q7. What is the purpose of using Helm in your deployments?**
+
+**Answer:**
+Helm simplifies Kubernetes deployments by using charts (templated YAML files). It allows us to:
+
+* Version control deployments
+* Reuse templates across environments
+* Use values.yaml for environment-specific config
+* Rollback and upgrade easily using `helm upgrade` or `helm rollback`
+
+---
+
+### ✅ **Q8. How do you ensure high availability of your application in Kubernetes?**
+
+**Answer:**
+
+* Use **multiple replicas** across nodes
+* Set proper **resource requests and limits**
+* Configure **readiness/liveness probes**
+* Use **PodDisruptionBudgets** for graceful rolling updates
+* Spread across **availability zones** using node selectors or affinity
+
+---
+
+### ✅ **Q9. Explain a challenging incident you resolved.**
+
+**Answer:**
+During a release, the application started throwing 500 errors. Logs showed DB connection failures. After investigation, we found the secrets had rotated but the app wasn't reloaded. 
+We updated the Helm chart to trigger rollout on secret change and added alerting on secret mismatches.
+
+---
+
+### ✅ **Q10. What is your branching strategy?**
+
+**Answer:**
+We follow **Gitflow**:
+
+* `main`: Production-ready code
+* `develop`: Integration branch
+* `feature/*`: New features
+* `release/*`: Pre-release staging
+* `hotfix/*`: Quick patches
+
+Each branch has separate Jenkins pipelines with different deployment targets.
+
+---
+
+## 💡 BONUS QUESTIONS (Rapid Fire)
+
+* **Command to scale a deployment in K8s:**
+  `kubectl scale deployment my-app --replicas=5`
+
+* **How to check last 50 lines of pod logs:**
+  `kubectl logs my-pod --tail=50`
+
+* **Dockerfile best practices?**
+  Use small base image (e.g., Alpine), multi-stage builds, `.dockerignore`, no hardcoded secrets.
+
+* **Difference between EBS and EFS:**
+  EBS is block storage for one EC2; EFS is shared file system for multiple EC2s.
+
+---
+
+Would you like a **technical task simulation** (e.g., build → test → deploy with rollback) or a **PDF version of this mock interview** for practice?

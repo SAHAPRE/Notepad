@@ -1,0 +1,35 @@
+MAIN.TF
+
+output "access_key_id" {
+  value       = aws_iam_access_key.root_access_key.id
+  description = "The Access Key ID for the example IAM user"
+}
+
+output "iam_user_name" {
+  value       = aws_iam_user.root.name
+  description = "Iam user name"
+}
+
+output "secret_access_key" {
+  value       = aws_iam_access_key.root_access_key.secret
+  description = "The Secret Access Key for the example IAM user"
+  sensitive   = true
+}
+
+
+terraform refresh - updating the state files with current infra
+terraform apply 
+
+terraform import resource -
+
+
+
+variable "instance_type" {
+  type        = string
+  default     = "t2.micro"
+  description = "EC2 instance type"
+}
+
+
+
+terraform apply

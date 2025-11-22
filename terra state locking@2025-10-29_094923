@@ -1,0 +1,37 @@
+Terraform state locking ensures that only one person or process can modify the state file at a time, which helps prevent race conditions 
+and inconsistencies. When working in a team or automating infrastructure management, it's crucial to have state locking in place to avoid 
+conflicts and protect the integrity of the state file.
+
+You can configure state locking using Amazon S3 as a backend with DynamoDB to handle the locking mechanism. This is a common and recommended approach
+ when using Terraform in AWS environment.Best Practices for Using State Locking with S3 and DynamoDB:
+ 
+1. Ensure Unique S3 Bucket Name: Since S3 bucket names must be globally unique, ensure that your bucket name doesn’t conflict with others.
+2. Use Encryption: Always enable encryption for the state file by setting encrypt = true. This ensures that sensitive data in your state file 
+is protected.
+3. Configure DynamoDB Table for Consistent Read and Write Capacity: State locking operations are not high-volume, but ensure that your DynamoDB table
+ has enough capacity to handle the locking operations. For most use cases, a read and write capacity of 1 is sufficient.
+4. Secure Access to State: Ensure that only authorized users have access to the S3 bucket and DynamoDB table. Use IAM policies to restrict 
+access as necessary.
+5. Keep Backend Configuration in Version Control: Store the backend configuration (e.g., the backend.tf file) in version control along with 
+your Terraform code to ensure consistency across your team.
+
+Conclusion:
+By using S3 for storing the Terraform state and DynamoDB for state locking, you ensure that multiple Terraform users or processes can work
+together without conflicts. The state locking mechanism helps to prevent race conditions and ensures the integrity of your infrastructure
+management.
+
+resource "aws_s3_bucket" "terraform_state" {
+  bucket = "my-terraform-state-bucket"  # Use a globally unique name
+  acl    = "private"
+}
+
+terraform {
+  backend "s3" {
+    bucket         = "my-terraform-state-bucket"  # Name of the S3 bucket
+    key            = "path/to/my/terraform.tfstate"  # Path within the bucket to store the state file
+    region         = "us-west-2"  # AWS region where the S3 bucket and DynamoDB table are located
+    encrypt        = true  # Enable encryption for the state file
+    dynamodb_table  = "terraform-lock"  # Name of the DynamoDB table for state locking
+    acl            = "private"  # Set the S3 ACL for the state file
+  }
+}

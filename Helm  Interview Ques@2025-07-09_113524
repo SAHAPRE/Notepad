@@ -1,0 +1,310 @@
+Beginner-Level Helm Questions
+Here’s a complete, **interview-ready explanation** for each of your Helm questions — clear, concise, and aligned with real DevOps/SRE project use:
+
+---
+
+### **1️⃣ What is Helm and why is it used?**
+
+**Helm** is a **package manager for Kubernetes**, similar to how **apt** or **yum** work for Linux.
+It simplifies the **deployment, upgrade, and management** of complex Kubernetes applications.
+
+✅ **Why it’s used:**
+
+* Automates the creation of Kubernetes YAML manifests.
+* Enables versioned and repeatable deployments.
+* Simplifies **application updates, rollbacks, and configuration management**.
+* Reduces manual errors — you manage applications through a single Helm command instead of multiple `kubectl` YAML applies.
+
+**In short:** Helm makes Kubernetes deployments **faster, consistent, and reusable.**
+
+---
+
+### **2️⃣ What is a Helm chart?**
+
+A **Helm chart** is a **package or blueprint** that defines how to deploy an application in Kubernetes.
+It bundles all Kubernetes resources (Deployment, Service, ConfigMap, etc.) into one versioned package.
+
+📦 **Analogy:**
+A Helm chart = `Dockerfile + Docker image` for Kubernetes manifests.
+
+---
+
+### **3️⃣ What are the main components of a Helm chart?**
+
+A typical chart has the following structure:
+
+```
+mychart/
+├── Chart.yaml          # Metadata about the chart
+├── values.yaml         # Default configuration values
+├── templates/          # Kubernetes manifest templates
+└── charts/             # (Optional) dependent charts
+```
+
+**Key components:**
+
+* **Chart.yaml** → Chart metadata (name, version, description, dependencies)
+* **values.yaml** → Default configuration values for templates
+* **templates/** → Directory with templated Kubernetes manifests (e.g., deployment.yaml, service.yaml)
+* **charts/** → Optional directory for chart dependencies (e.g., Redis, PostgreSQL)
+
+---
+
+### **4️⃣ What is the difference between `helm install` and `helm upgrade`?**
+
+| Command        | Purpose                                                                                                | Example                                     |
+| -------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------- |
+| `helm install` | Installs a new release of a chart. Fails if release name already exists.                               | `helm install myapp ./helm --namespace dev` |
+| `helm upgrade` | Upgrades an existing release with new chart version or updated values. Fails if release doesn’t exist. | `helm upgrade myapp ./helm --namespace dev` |
+
+💡 **Best practice:** Use
+
+```bash
+helm upgrade --install myapp ./helm
+```
+
+This ensures the chart is installed if missing, or upgraded if already deployed.
+
+---
+
+### **5️⃣ How do you pass custom values to a Helm chart during installation?**
+
+You can pass values in two ways:
+
+**Option 1 – Inline with `--set`:**
+
+```bash
+helm install myapp ./helm --set image.tag=v2 --set replicaCount=3
+```
+
+**Option 2 – Using a custom values file:**
+
+```bash
+helm install myapp ./helm -f custom-values.yaml
+```
+
+**Option 3 – Combine both:**
+
+```bash
+helm install myapp ./helm -f values-prod.yaml --set image.tag=v2
+```
+
+---
+
+### **6️⃣ What is the purpose of `values.yaml`?**
+
+* `values.yaml` contains **default configuration values** for the Helm chart templates.
+* It defines values like image name, tag, replicas, service type, etc.
+* These values can be **overridden at runtime** using `--set` or custom values files.
+
+✅ **Purpose:** Keeps configuration **dynamic** and **environment-specific** without modifying template files.
+
+---
+
+### **7️⃣ What is the use of the `templates/` directory in a chart?**
+
+The `templates/` directory contains **Kubernetes manifest templates** written using **Go templating syntax**.
+These files define resources like Deployments, Services, ConfigMaps, etc., but with placeholders replaced by values from `values.yaml`.
+
+Example (deployment template):
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+```
+
+✅ **Purpose:** Makes manifests reusable for multiple environments by replacing hardcoded values with dynamic ones.
+
+---
+
+### **8️⃣ How do you override values from `values.yaml` at runtime?**
+
+There are two main ways:
+
+1. **Use `--set` flag for quick overrides:**
+
+   ```bash
+   helm upgrade --install myapp ./helm --set image.tag=v3
+   ```
+2. **Use `-f` or `--values` with a custom file:**
+
+   ```bash
+   helm upgrade --install myapp ./helm -f values-prod.yaml
+   ```
+
+Helm merges the overrides on top of defaults in `values.yaml`.
+Priority order: **CLI (`--set`) > values file (`-f`) > default values.yaml**
+
+---
+
+### **9️⃣ What is the `Chart.yaml` file used for?**
+
+The `Chart.yaml` file stores **metadata** about the chart — similar to a `package.json` or `pom.xml`.
+
+Example:
+
+```yaml
+apiVersion: v2
+name: myapp
+version: 1.0.0
+description: Helm chart for deploying my microservice
+appVersion: "1.2.3"
+maintainers:
+  - name: Prerna Saha
+    email: prernasaha022023@gmail.com
+dependencies:
+  - name: redis
+    version: 16.2.0
+    repository: https://charts.bitnami.com/bitnami
+```
+
+✅ **Purpose:**
+
+* Defines the **chart version**, **app version**, **description**, and **dependencies**.
+* Used by Helm to package, version, and share charts.
+
+---
+
+### **🔟 What command is used to create a new chart?**
+
+To create a new Helm chart skeleton, use:
+
+```bash
+helm create mychart
+```
+
+This command generates a boilerplate directory with:
+
+```
+mychart/
+├── Chart.yaml
+├── values.yaml
+├── charts/
+└── templates/
+    ├── deployment.yaml
+    ├── service.yaml
+    └── _helpers.tpl
+```
+
+---
+
+✅ **Summary Table**
+
+| #  | Question              | Short Answer                                                |
+| -- | --------------------- | ----------------------------------------------------------- |
+| 1  | What is Helm?         | Kubernetes package manager for managing complex deployments |
+| 2  | What is a Helm chart? | Blueprint that defines how to deploy an app                 |
+| 3  | Components            | Chart.yaml, values.yaml, templates/, charts/                |
+| 4  | install vs upgrade    | install = new release; upgrade = update existing release    |
+| 5  | Pass values           | Use `--set` or `-f custom-values.yaml`                      |
+| 6  | values.yaml           | Default config values for templates                         |
+| 7  | templates/            | Contains Kubernetes manifest templates                      |
+| 8  | Override values       | Use `--set` or `-f` to override defaults                    |
+| 9  | Chart.yaml            | Metadata for chart and dependencies                         |
+| 10 | Create chart          | `helm create <chart-name>`                                  |
+
+---
+Scenario-based:
+
+You deployed a release using Helm but the pods are crashing. How do you troubleshoot?
+
+How would you deploy the same chart to dev, staging, and prod with different values?
+
+How do you prevent Helm from deleting a persistent volume on uninstall?
+
+You want to preview what changes Helm will apply before upgrading — how do you do it?
+
+How do you test a Helm chart locally before pushing to production?
+
+You need to share a private Helm chart with another team. How would you do it securely?
+
+How would you rollback a Helm release to a specific version if you have multiple upgrades?
+
+Your Helm upgrade fails midway. How would you ensure a clean recovery?
+
+How do you version and promote Helm charts between environments (dev → stage → prod)?
+
+How do you deploy and manage applications in Kubernetes? Can you describe your experience working with kubectl, YAML manifests, and Helm charts for deployments?
+How you will organize helm charts and provide a one click deployment for all services including monitoring, shared, and app specific services?
+
+#################################################################################
+
+
+Question 1
+
+Install a Chart (2 min)
+
+Task: Install the Bitnami nginx chart with 2 replicas.
+
+Commands:
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install my-nginx bitnami/nginx --set replicaCount=2
+
+Question 2
+
+Inspect and Upgrade a Release (3 min)
+
+Task: View current values and change service type to LoadBalancer.
+
+Commands:
+helm get values my-nginx
+helm upgrade my-nginx bitnami/nginx --set service.type=LoadBalancer
+
+Question 3
+
+Template Rendering (3 min)
+
+Task: Render chart templates before installation.
+
+Command:
+helm template my-nginx bitnami/nginx
+
+Question 4
+
+Helm Uninstall (2 min)
+
+Task: Uninstall the nginx release.
+
+Command:
+helm uninstall my-nginx
+
+
+uestion 1
+
+Helm Deep-Dive Tasks (10 mins)
+
+⚙ 15. Customize Helm Chart Before Install (4 mins)
+
+Task: Override values (replicas, service type, metrics) before install.
+
+Command:
+helm install my-nginx bitnami/nginx --set ...
+
+Question 2
+
+Helm Debugging + Template Rendering (3–4 mins)
+
+Task: Template rendering with custom values.
+
+Follow-up Questions:
+What happens with missing values?
+What does helm lint do?
+
+
+Question 3
+
+Helm Rollback Scenario (2 mins)
+
+Task: Rollback due to downtime.
+
+Command:
+helm rollback my-nginx 1

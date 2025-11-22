@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp_deployment
+  labels:
+    app: webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp-container
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+		
+		
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-container
+        image: my-image:latest
+        resources:
+          requests:
+            memory: "512Mi"      # Minimum memory that will be allocated to the container
+            cpu: "500m"          # Minimum CPU that will be allocated to the container (500 milliCPU)
+          limits:
+            memory: "1Gi"        # Maximum memory the container can use
+            cpu: "1"             # Maximum CPU the container can use (1 CPU = 1000m)

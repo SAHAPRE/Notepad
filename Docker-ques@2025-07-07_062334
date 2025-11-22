@@ -1,0 +1,447 @@
+************************************************************
+
+From node:22
+WORKDIR /app
+Maintainer "prernasaha10@gmail.com"
+RUN npm install
+CMD ["npm","start"]
+COPY package.json package.json
+ADD https://url
+EXPOSE 80
+
+*************************************************************
+
+
+docker build -t my_image:1.0.1 .
+
+docker run -it --name container_name -p 80:80 -v /tmp /tmp/ab image_name
+
+
+*********************MULTI-STAGE*****************************
+
+From node:22 as Builder
+Maintainer "prernasaha10@gmail.com"
+WORKDIR /app
+COPY package.json package.json
+RUN npm install
+COPY . . 
+RUN npm run build
+
+From node:22 as RUNNER
+WORKDIR /app
+COPY --from=builder /build/node-modules node-modules
+CMD ["npm","start"]
+EXPOSE 80
+
+
+*****************************************************************
+FROM defines the base image
+RUN execute any commands in a new layer on top of the current image and commit the results.
+CMD provide defaults for an executing container.
+EXPOSE informs Docker that the container listens on the specified network ports at runtime. NOTE: does not actually make ports accessible.
+ENV sets environment variable.
+ADD copies new files, directories or remote file to container. Invalidates caches. Avoid ADD and use COPY instead.
+COPY copies new files or directories to container. By default this copies as root regardless of the USER/WORKDIR settings. Use --chown=<user>:<group> to give ownership to another user/group.
+ (Same for ADD.)
+ENTRYPOINT configures a container that will run as an executable.
+VOLUME creates a mount point for externally mounted volumes or other containers
+USER sets the user name for following RUN / CMD / ENTRYPOINT commands.
+WORKDIR sets the working directory.
+
+LABEL apply key/value metadata to your images, containers, or daemons.
+HEALTHCHECK tells docker how to test a container to check that it is still working.
+
+
+CMD['']
+ENTRYPOINT ['python']
+CMD ['file']
+
+*****************************************************************
+
+1. What is Docker and how does it differ from a virtual machine?
+Docker is a platform that allows you to build, package, and run applications in lightweight, isolated environments called containers.
+
+It lets developers bundle an app with all its dependencies (like libraries, config files, etc.) into a single unit called a Docker container.
+Containers can run consistently across different environments — development, staging, production — eliminating the "it works on my machine" problem
+Summary
+VMs are more suitable when you need full OS isolation or want to run different operating systems on the same host.
+
+Docker is ideal for modern DevOps, CI/CD, microservices, and cloud-native applications.
+
+2. What are the main components of Docker architecture? --Docker Engine, Docker Daemon, CLI, Images, Containers, etc.
+Docker Engine is the core component of Docker — the runtime that builds, runs, and manages containers on a host system.
+
+It allows you to use commands like docker run, docker build, and docker pull to manage containerized applications.
+
+The Docker Daemon (dockerd) is the core background service that runs on your system and manages Docker containers, images, volumes, and networks.
+
+It listens for Docker API requests — either from the Docker CLI (docker) or other tools — and performs the requested actions.
+--Component	Description
+Client	Interface to interact with Docker
+Daemon	Core engine that builds/runs containers
+Image	Blueprint/template for containers
+Container	Running instance of an image
+Registry	Stores and distributes Docker images
+Network	Manages container communication
+Volume	Persists and shares data between containers
+
+3. Explain the difference between a Docker image and a container.
+A Docker image is a read-only template that contains everything needed to create a container — the application code, libraries, dependencies, tools, and 
+configuration files.
+
+4. What is a Dockerfile? What are some key Dockerfile instructions?
+A Dockerfile is a text file containing a set of instructions to build a Docker image.
+
+It defines everything needed to set up your application environment
+
+5. How does Docker ensure isolation between containers? 
+Docker uses several Linux kernel features to provide strong isolation between containers — so they behave like independent systems, but share the host kernel.
+
+6. What happens when you run docker run?
+Docker Run is used to run a container from an Image. // The docker run command is used to create and start a new container from a Docker image.
+
+
+🛠️ Docker Commands & Operations
+7. What is the difference between docker run, docker start, and docker exec? --docker start command is used to start one or more stopped containers.
+The docker exec command allows you to run a command inside an already running container. It’s like SSH for containers — but faster and more integrated.
+
+8. How do you copy files from your host into a running container? --docker cp ./myfile.txt my_container:/app/
+
+9. How do you inspect logs of a Docker container? --docker logs <container_name_or_id>
+
+10. How do you connect a container to a specific network or volume?
+
+11. What is the difference between ENTRYPOINT and CMD in Dockerfile?
+Both are the set of instructions that we write in DF to execute commands in docker at the time of running any containers./// define the default behavior of a container when it starts,
+but the key diff b/w them i Entry point can ovrride Cmd. Entrypoint has high priority than Cmd.
+
+🧱 Dockerfile & Image Management
+13. How do you build a Docker image from a Dockerfile? docker build -t image_name:tag .
+
+14. What is a multi-stage build? Why would you use it? -- to reduce size of an image.
+
+15. What’s the difference between COPY and ADD in a Dockerfile? 
+Both are used to Copy files nad directories but add command has some additional features like it can use to download or copy any file from the urls or can be used to untar any archive files.
+
+16. How can you reduce the image size of your Docker container? -- with the help of multi stage docker file.
+
+🌐 Networking
+17. Explain Docker networking modes (bridge, host, none, overlay). ***********************
+
+18. How do containers communicate with each other?
+By POrt mapping, user defined bridge networks, docker compose
+
+19 How do you expose a port from a container to the host machine? 
+at the time of run -p and also in docker file
+
+📦 Volumes & Storage
+20. What are Docker volumes? How are they different from bind mounts? *************************
+
+21. How would you persist data in a container? ***********************
+
+22. How do you back up and restore volumes? ***********************
+
+🚨 Security & Optimization
+23.  How do you scan Docker images for vulnerabilities? -- trivi
+
+24. What are best practices for securing Docker containers? -- 
+By default, containers run as root. This is risky!
+
+Add a user in the Dockerfile and drop privilege
+Practice	Goal
+Use minimal base images	Reduce vulnerabilities
+Drop root privileges	Least privilege principle
+Scan images	Detect known CVEs
+Secure secrets	Avoid hard-coded credentials
+Limit resources	Prevent abuse
+Use isolated networks	Reduce container exposure
+Monitor & audit	Early detection of threats
+
+24. How do you handle secrets or sensitive data in Docker? -- Use .dockerignore
+Pass secrets at runtime, not build time:
+
+docker run -e DB_PASSWORD=supersecret123 myapp
+
+25. What’s the difference between running a container as root vs non-root? 
+It can install software, modify files, change ownerships
+
+If the container is compromised, the attacker has root inside the container
+
+If Docker is misconfigured (e.g., volumes mounted or user namespaces not enabled), the container’s root user might gain access to sensitive host resources
+
+🔄 Docker Compose & Orchestration
+### 🧩 What is Docker Compose?
+
+**Docker Compose** is a tool that lets you **define and run multi-container Docker applications** using a **single YAML file**.
+
+Instead of running each container manually with `docker run`, Compose lets you:
+
+* Define **services** (containers)
+* Configure **networks**, **volumes**, and **environment variables**
+* Start everything with **one command**
+
+---
+
+### 🧪 Why Use Docker Compose?
+
+| Without Compose                    | With Compose                  |
+| ---------------------------------- | ----------------------------- |
+| `docker run ...` for each service  | Single `docker-compose up`    |
+| Manual networking setup            | Built-in service discovery    |
+| Manual volume and env var handling | Declarative configuration     |
+| Not scalable or repeatable         | Consistent setup across teams |
+
+---
+
+### 📄 Basic Compose File (`docker-compose.yml`)
+
+```yaml
+version: "3"
+services:
+  web:
+    image: nginx
+    ports:
+      - "8080:80"
+
+  app:
+    build: ./app
+    volumes:
+      - .:/code
+    environment:
+      - DEBUG=true
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: example
+```
+
+---
+
+### 🚀 How to Use Docker Compose
+
+#### 1. **Create `docker-compose.yml`**
+
+Define services, ports, env vars, etc.
+
+#### 2. **Start All Services**
+
+```bash
+docker-compose up
+```
+
+Use `-d` for detached mode:
+
+```bash
+docker-compose up -d
+```
+
+#### 3. **Stop All Services**
+
+```bash
+docker-compose down
+```
+
+#### 4. **Rebuild Images**
+
+```bash
+docker-compose build
+```
+
+---
+
+### 🔗 Built-in Networking
+
+Each service can access others by **service name**:
+
+* `web` can talk to `db` at `db:5432`
+* Docker Compose creates a **default network** for this
+
+---
+
+### 🧠 Typical Use Cases
+
+* **Local development** of microservices
+* Spinning up **dev/test environments**
+* Running **integration tests**
+* Managing **stack deployments** (frontend + backend + DB)
+
+---
+
+### ✅ Summary
+
+| Feature                 | Benefit                               |
+| ----------------------- | ------------------------------------- |
+| YAML configuration      | Easy, readable infrastructure-as-code |
+| One-command startup     | Simplifies multi-container apps       |
+| Network auto-setup      | Built-in DNS via service names        |
+| Scalable and repeatable | Useful in teams and CI/CD             |
+
+---
+27. How would you define multiple services in a docker-compose.yml file?
+
+version: '3.8'
+
+services:
+  web:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+  app:
+    build: ./app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    networks:
+      - app-network
+    environment:
+      - DATABASE_URL=postgres://user:password@db:5432/mydb
+
+  db:
+    image: postgres:14
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    networks:
+      - app-network
+
+volumes:
+  pgdata:
+
+networks:
+  app-network:
+
+28. How do you scale services using Docker Compose?
+docker-compose up --scale <service_name>=<number_of_instances>
+docker-compose up --scale web=3
+
+29. How does Docker Compose manage dependencies between services?
+
+📈 Real-World/Scenario-Based Questions
+30. Describe a problem you faced using Docker in production and how you solved it. ??????????????????
+
+31. How do you debug a failing Docker container?
+Check the Container’s Logs**
+
+```bash
+docker logs <container_id_or_name>
+```
+
+* Look for stack traces, missing files, startup errors, permission issues, or failed services.
+Check the Container's Exit Status**
+
+```bash
+docker ps -a
+```
+
+Look under the `STATUS` and `EXIT CODE` columns.
+
+| Exit Code | Meaning                |
+| --------- | ---------------------- |
+| 0         | Normal exit            |
+| 1         | General error          |
+| 137       | Killed (OOM or signal) |
+| 127       | Command not found      |
+
+Start a Shell Inside the Container**
+
+If the container is still running:
+
+```bash
+docker exec -it <container_name> /bin/bash
+# or for Alpine or BusyBox containers
+docker exec -it <container_name> /bin/sh
+```
+
+If it exits immediately, start an interactive shell manually:
+
+```bash
+docker run -it --entrypoint /bin/bash <image_name>
+```
+
+Inspect the Docker Image**
+
+Check if the image works **standalone**:
+
+```bash
+docker run -it <image_name> /bin/bash
+```
+
+If the container still fails:
+
+* Check if the `CMD` or `ENTRYPOINT` in the Dockerfile is misconfigured.
+* Confirm the expected application binary/script exists in the image.
+
+Inspect the Container Metadata**
+
+```bash
+docker inspect <container_name>
+```
+
+* Look at `Config.Cmd`, `Config.Entrypoint`, and mounted volumes.
+* Check environment variables and container volumes.
+
+*Reproduce the Issue Locally**
+
+If it's a complex app (e.g., microservice or DB-dependent), try running only that container in isolation:
+
+* Use a test config
+* Disable failing services
+* Test with a manual command
+
+Use Health Checks**
+
+Add `HEALTHCHECK` in your Dockerfile or Compose file to ensure the container is actually healthy:
+
+```Dockerfile
+HEALTHCHECK CMD curl --fail http://localhost:8080 || exit 1
+```
+Use `docker diff` to Inspect File Changes**
+
+Check what changed in the container filesystem:
+
+```bash
+docker diff <container_id>
+```
+
+---
+
+### ✅ Summary Table
+
+| Step               | Command / Action                        |
+| ------------------ | --------------------------------------- |
+| View logs          | `docker logs <name>`                    |
+| Check exit code    | `docker ps -a`                          |
+| Open shell inside  | `docker exec -it <name> /bin/bash`      |
+| Run shell manually | `docker run -it --entrypoint /bin/bash` |
+| Inspect config     | `docker inspect <name>`                 |
+| Check file changes | `docker diff <name>`                    |
+
+32. What are some common reasons a container might keep restarting? Crash loop back off error
+
+33. Have you worked with CI/CD pipelines using Docker? Explain how. ???????????????
+
+34. How would you use Docker in a microservices-based architecture? ?????????????
+
+🔁 Bonus: Advanced/Follow-Up Questions
+35. How does layer caching work in Docker builds?
+
+36. What is the ONBUILD instruction?  -- The ONBUILD instruction in a Dockerfile sets up a trigger that will be executed when the image is used as a base for another build.
+
+37. How would you troubleshoot a container that runs but does nothing?
+This situation usually means the container starts and exits quickly — often due to:
+
+No long-running process
+Command misconfigured
+App crashing silently
+Wrong CMD or ENTRYPOINT
+
+38. What are image tags and how do you version your images? 
+during the build of  a image from dockerfile

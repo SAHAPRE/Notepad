@@ -1,0 +1,60 @@
+nested loop
+count vs for_each 
+tupple
+
+provider "aws" {
+  region = "us-west-2"  # Specify your AWS region
+}
+
+# Define the number of instances we want to create
+variable "instance_count" {
+  default = 3  # We will create 3 EC2 instances
+}
+
+# Create multiple EC2 instances using count
+resource "aws_instance" "example" {
+  count = var.instance_count  # The number of instances to create
+
+  ami           = "ami-0c55b159cbfafe1f0"  # Example AMI ID (Amazon Linux 2)
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "ExampleInstance-${count.index}"  # Use count.index to create unique names
+  }
+}
+
+# Output the instance IDs
+output "instance_ids" {
+  value = aws_instance.example[*].id
+}
+
+
+In Terraform, the count parameter is used to manage the creation of multiple identical resources. This can be helpful when you need to create
+several instances of a resource based on a condition or a given number.
+ 
+provider "aws"{
+region= "ap-south-1"
+}
+
+variable "instance_count"{
+default=10
+}
+
+resource "aws_instance" "prerna"{
+name="prerna"
+ami="ami0006668992678"
+instance_type=t2.micro
+count=var.instance_count
+tags = {
+    Name = "ExampleInstance-${count.index}"  # Use count.index to create unique names
+  }}
+
+output "instance"{
+value="aws_instance.prerna.count[*].id"
+}
+
+
+The terraform taint command marks a resource as "tainted," meaning Terraform will destroy and recreate the resource on the next terraform apply.
+
+terraform destroy -target=aws_instance.example
+

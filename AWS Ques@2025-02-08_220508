@@ -1,0 +1,150 @@
+Here are some AWS interview questions tailored for candidates with around **4 years of experience**. These questions cover a range of topics including core AWS 
+services, architecture design, troubleshooting, security, and best practices.
+
+### 1. **General AWS Knowledge**
+- **What are the differences between EC2 and Lambda? When would you choose one over the other?**
+When to Use EC2
+Use EC2 when you need:
+
+✅ Full control over the operating system and environment
+✅ Long-running applications or background workers
+✅ Custom software installs or special dependencies
+✅ Applications with stateful behavior
+✅ Traditional server hosting, e.g., web apps, databases, batch jobs
+
+⚡ When to Use Lambda
+Use Lambda when you need:
+
+✅ Event-driven execution (S3 upload, DynamoDB stream, API Gateway, etc.)
+✅ Short-lived, stateless functions
+✅ Rapid scaling based on concurrent requests
+✅ Lower cost for infrequent workloads
+✅ Minimal infrastructure management (just deploy code)
+
+- **What are some ways to secure your AWS account?**
+
+- **What are the different types of storage options in AWS, and when would you use each?**
+  - (e.g., EBS, S3, Glacier, EFS, etc.)
+- **Explain the concept of Availability Zones and Regions in AWS. Why are they important?**
+- **What are the key differences between an Application Load Balancer (ALB) and a Network Load Balancer (NLB)?**
+- **What are some of the advantages and disadvantages of using Spot Instances in AWS?**
+  | Advantage                | Disadvantage                   |
+| ------------------------ | ------------------------------ |
+| Very low cost            | Can be interrupted anytime     |
+| Access to extra capacity | No guaranteed availability     |
+|You can run high-volume workloads at a low cost | Your app needs to be fault-tolerant and able to resume or retry if a Spot instance disappears.
+| Great for stateless apps | Requires fault-tolerant design |
+
+### 2. **Compute and Networking**
+- **What is an Auto Scaling Group, and how does it work?**
+1. Vertical Scaling (Scale Up/Down)
+Increase/decrease the instance type (e.g., t3.medium → m5.large)
+
+Simple but involves downtime (you must stop and restart the instance)
+
+ 2. Horizontal Scaling (Scale Out/In)
+Add more EC2 instances behind a load balancer
+
+Automatically scale in/out based on load (e.g., CPU, memory, requests/sec)
+
+🔸 This is highly available and fault-tolerant — preferred for production.
+
+- **What is the difference between an Elastic IP and a Public IP?**
+An Elastic Load Balancer automatically distributes incoming traffic across multiple EC2 instances, containers, or IP addresses in one or more Availability Zones.
+- **How would you set up a Virtual Private Cloud (VPC) in AWS and ensure security and best practices?**
+  - (e.g., Subnets, Route Tables, NACLs, Security Groups)
+- **What are the differences between an Internet Gateway and a Virtual Private Gateway in AWS?**
+
+Feature	Internet Gateway (IGW)	                                                         Virtual Private Gateway (VGW)
+Purpose	Provides a connection between a VPC and the internet. Provides a connection between a VPC and an on-premises network or another VPC (via VPN or Direct Connect).
+Connection Type	Connects a VPC to the public internet.	        Connects a VPC to a private network (on-premises or another VPC).
+
+### 3. **Security and Identity**
+- **How do you implement Identity and Access Management (IAM) in AWS?**
+  - (e.g., Users, Groups, Roles, Policies)
+- **What are IAM best practices to follow?**
+- **Explain the concept of IAM roles for EC2 instances.**
+- **What are Security Groups, and how do they differ from Network Access Control Lists (NACLs)?**
+- **How would you secure an S3 bucket to prevent public access?**
+
+Enable Block Public Access: Use the S3 Block Public Access settings to prevent any public access to your bucket and objects.
+Review Bucket Policy: Ensure your bucket policy denies public access and allows access only to authorized users.
+Review Object ACLs: Make sure that the objects in the bucket are not publicly accessible through ACLs.
+Be Cautious with Pre-signed URLs: Use them only when necessary, and ensure they are temporary and secure.
+Carefully Manage IAM Permissions: Ensure IAM users, groups, and roles have appropriate permissions to access the bucket.
+Use Encryption: Enable encryption to secure your objects at rest.
+Monitor and Audit Access: Use CloudTrail, S3 access logs, and AWS Config to monitor and detect unauthorized access or configuration changes.
+
+- **Explain AWS Key Management Service (KMS). How would you use it to encrypt data?**
+AWS KMS is a fully managed service that helps you create, control, and manage encryption keys used to protect your data.
+
+🎯 Key Features:
+Centralized management of encryption keys
+
+Integrated with most AWS services
+
+Supports encryption at rest and encryption in transit
+
+- **How would you set up multi-factor authentication (MFA) for your AWS account?**
+
+### 4. **Storage and Databases**
+- **Explain the different types of Amazon S3 storage classes and use cases for each.**
+- **What is Amazon EBS, and what types of volumes are available?**
+Amazon EBS (Elastic Block Store) is a block storage service designed for use with Amazon EC2 instances.
+It provides durable, high-performance, persistent storage that you can attach to EC2.
+EBS volumes behave like raw, unformatted block devices (like virtual hard disks).
+They persist independently from the EC2 instance lifecycle.
+| Feature            | EBS                                     | Instance Store                     |
+| ------------------ | --------------------------------------- | ---------------------------------- |
+| **Persistence**    | Yes – data survives instance stop/start | No – data lost when instance stops |
+| **Backup support** | Snapshots supported                     | Not supported                      |
+| **Durability**     | Highly durable (replicated in AZ)       | Temporary                          |
+
+- **How does Amazon RDS work? What are the different types of databases you can use with RDS?**
+- **What are the differences between Amazon RDS and DynamoDB?**
+- **How would you design a highly available database solution using RDS?**
+- **What are some common strategies to back up and restore data in AWS?**
+
+### 5. **Monitoring, Logging, and Troubleshooting**
+- **What services would you use to monitor your AWS infrastructure?**
+  - (e.g., CloudWatch, CloudTrail, X-Ray)
+- **Explain how you would use Amazon CloudWatch for monitoring EC2 instances and Autoscaling.**
+- **What is AWS CloudTrail, and why is it important for auditing and compliance?**
+- **How would you troubleshoot a slow EC2 instance or an application hosted on AWS?**
+- **How would you set up centralized logging for your AWS environment?**
+
+### 6. **Serverless and Application Services**
+- **What are AWS Lambda functions, and how do they fit into a serverless architecture?**
+- **What are the advantages and disadvantages of using AWS Lambda?**
+- **How do you implement versioning and aliasing in AWS Lambda?**
+- **What is Amazon API Gateway, and how does it integrate with AWS Lambda?**
+- **How would you manage and store environment variables in AWS Lambda?**
+
+### 7. **DevOps and CI/CD**
+- **Explain the concept of Infrastructure as Code (IaC) in AWS. What tools are available for this?**
+  - (e.g., CloudFormation, Terraform, AWS CDK)
+- **What are some strategies for setting up Continuous Integration and Continuous Deployment (CI/CD) pipelines using AWS?**
+  - (e.g., CodePipeline, CodeBuild, CodeDeploy)
+- **What is AWS Elastic Beanstalk, and how does it simplify application deployment?**
+- **How would you ensure zero-downtime deployments in a cloud environment using AWS?**
+
+### 8. **Cost Management and Optimization**
+- **How do you monitor and manage costs in AWS?**
+  - (e.g., AWS Cost Explorer, AWS Budgets, Reserved Instances)
+- **What is the difference between Reserved Instances and On-Demand Instances?**
+- **How can you reduce AWS costs using Spot Instances and Auto Scaling?**
+- **What are some best practices to optimize AWS cost efficiency without compromising performance?**
+
+### 9. **High Availability and Fault Tolerance**
+- **How do you design an application in AWS to be highly available?**
+- **What is AWS Route 53, and how does it help with DNS management and high availability?**
+- **Explain how you would architect a multi-region or multi-AZ (Availability Zone) application on AWS.**
+- **How would you ensure fault tolerance in your application on AWS?**
+  - (e.g., using ELB, Auto Scaling, Multi-AZ RDS, Cross-region replication)
+
+### Behavioral and Experience-Based Questions:
+- **Can you describe a challenging project you've worked on in AWS? What were the challenges, and how did you solve them?**
+- **How do you handle troubleshooting a complex issue in a production environment on AWS?**
+- **What steps would you take to improve the security posture of an AWS infrastructure you've inherited?**
+- **Can you explain a time when you optimized costs for a client or project in AWS?**
+- **Describe how you've managed a migration of on-prem applications to AWS. What tools and strategies did you use?**

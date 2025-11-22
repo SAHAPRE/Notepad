@@ -1,0 +1,166 @@
+In Terraform, rolling back changes typically means reverting your infrastructure to a previous state or undoing modifications that were applied to your resources. Unlike traditional systems with
+ built-in version control mechanisms for rollback, Terraform's rollback capability is based on managing the **state file** and applying a series of commands to
+ revert changes. Here are a few approaches to handling rollback scenarios in Terraform:
+
+### 1. **Reverting Using Terraform State File**
+   Terraform maintains a state file (`terraform.tfstate`) that records the current configuration of your resources. The state file helps Terraform 
+   track the resources it manages and understand the difference between the existing infrastructure and the desired state defined in your Terraform 
+   configuration files.
+
+   If something goes wrong after running `terraform apply` and you want to rollback the changes, you can revert to a previous version of the state
+   file.
+
+   #### Steps to Rollback Terraform Changes:
+   - **Backup Your State File**: Before making any changes, always back up your state files, especially if you’re working in a production environment. 
+   You can manually download and store the `.tfstate` file.
+   
+     ```bash
+     cp terraform.tfstate terraform.tfstate.backup
+     ```
+
+   - **Revert to Previous State**: If you have a backup of the state file or use version control on your state file (e.g., Terraform Cloud, S3 with 
+   versioning enabled), 
+   you can revert to the backup state. Replace the current `terraform.tfstate` file with the backup file:
+   
+     ```bash
+     cp terraform.tfstate.backup terraform.tfstate
+     ```
+
+   - **Run Terraform Plan**: After restoring the state, run `terraform plan` to verify that the infrastructure will be reverted to its previous state 
+   based on the older configuration.
+
+     ```bash
+     terraform plan
+     ```
+
+   - **Reapply the Old State**: If the `terraform plan` output shows the correct changes, run `terraform apply` to roll back the changes:
+
+     ```bash
+     terraform apply
+     ```
+
+   This will bring your infrastructure back to the previous state as defined in the backup `.tfstate` file.
+
+---
+
+### 2. **Use `terraform state` Commands**
+   Terraform provides commands like `terraform state rm` and `terraform state mv` to manipulate the state file. These commands are useful when you 
+   want to **remove resources** from the state or **move resources** between states.
+
+   - **Removing Resources from the State**: You can remove a resource from the state file without destroying it in your actual infrastructure. 
+   This will allow you to re-create the resource during the next `terraform apply`.
+
+     ```bash
+     terraform state rm <resource_name>
+     ```
+
+     Example:
+     ```bash
+     terraform state rm aws_instance.example
+     ```
+
+     After removing it from the state, the resource will be recreated when you run `terraform apply`.
+
+   - **Moving Resources Between State Files**: If you need to move resources between different state files (or workspaces), you can use the 
+   `terraform state mv` command.
+
+     ```bash
+     terraform state mv <source_resource> <destination_resource>
+     ```
+
+   These operations modify the state, but they don’t change your infrastructure unless combined with the next step (i.e., `terraform apply`).
+
+---
+
+### 3. **Using `terraform apply` with `-target`**
+   You can limit which resources are affected by using the `-target` option with `terraform apply`. This is not exactly a rollback, but it can be 
+   used to target specific resources and revert only certain parts of the infrastructure, rather than applying the entire plan.
+
+   Example:
+   ```bash
+   terraform apply -target=aws_instance.example
+   ```
+
+   This command will apply changes only to the `aws_instance.example` resource, potentially undoing changes to other resources in the infrastructure.
+
+---
+
+### 4. **Manually Rollback Changes (for Destructive Changes)**
+   If a destructive change was applied (such as deleting resources), and there's no backup of the state file, you may need to manually restore or
+   recreate the resources. In this case:
+   
+   - Manually recreate resources via Terraform configuration.
+   - Run `terraform plan` and `terraform apply` to ensure that Terraform detects the resources and brings them back into the state.
+
+   You may need to manually update the Terraform configuration files to match the desired state for those resources, especially if you no longer
+   have access to their configuration.
+
+---
+
+### 5. **Using Version Control (Git) with Terraform Code**
+   It's highly recommended to use **version control** (e.g., **Git**) for managing your Terraform configuration files. If you store your Terraform 
+   configurations (i.e., `.tf` files) in a Git repository, you can easily rollback to a previous commit if you need to revert to a prior 
+   configuration.
+
+   #### Steps:
+   - If you have versioned your Terraform code with Git, you can revert to a previous commit in your Git repository:
+
+     ```bash
+     git checkout <commit_hash>
+     ```
+
+   - After reverting the code, run `terraform plan` and `terraform apply` to apply the changes.
+
+   ```bash
+   terraform plan
+   terraform apply
+   ```
+
+   This approach is useful when you want to rollback code changes and ensure that your infrastructure reflects a previous version of the configuration.
+
+---
+
+### 6. **Using Terraform Cloud or Remote Backends (Automatic State Versioning)**
+   If you’re using **Terraform Cloud**, **Terraform Enterprise**, or any **remote backend** with state versioning (e.g., AWS S3 with versioning enabled), you can revert to a previous version of your state file.
+
+   #### Steps:
+   - **Terraform Cloud/Enterprise**: Terraform Cloud and Enterprise maintain versioned states. You can roll back to a previous state from the UI or API.
+   
+   - **Remote Backends (e.g., S3)**: If you're using AWS S3 with versioning enabled, you can retrieve a previous version of your `terraform.tfstate` file from the S3 console or via the AWS CLI:
+
+     ```bash
+     aws s3 cp s3://my-terraform-state-bucket/terraform.tfstate <local_path> --version-id <version-id>
+     ```
+
+   - Once the older state is retrieved, run `terraform apply` again to revert the infrastructure to the older state.
+
+---
+
+### 7. **Plan and Apply With Rollback Considerations**
+   You can always generate a detailed `terraform plan` before applying changes. This will show you exactly what will be changed, created, or destroyed. Reviewing this plan before applying changes
+   allows you to verify the operations before committing to them.
+
+   ```bash
+   terraform plan -out=tfplan
+   ```
+
+   Then, if needed, you can apply the plan later:
+   
+   ```bash
+   terraform apply tfplan
+   ```
+
+---
+
+### Conclusion
+
+Terraform doesn't have a built-in "undo" or "rollback" feature like traditional version control systems. However, by using the following strategies, 
+you can effectively revert changes and restore your infrastructure to a previous state:
+
+1. **Reverting state** via state file backups.
+2. **Manually rolling back** changes with `terraform state rm` and `terraform state mv`.
+3. **Using Git** for versioning configuration files to roll back code changes.
+4. **Terraform Cloud or Remote Backends** for state file versioning.
+
+It's essential to implement good practices, such as regular state backups and using version control for your Terraform code, to minimize the impact 
+of mistakes and make rollbacks easier.

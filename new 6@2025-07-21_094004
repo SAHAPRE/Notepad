@@ -1,0 +1,15 @@
+✅ Sample Answer: Why I Prefer Docker in My Project
+I prefer Docker in my projects primarily because it brings consistency, portability, and scalability to our microservices-based architecture.
+
+In our project, we had multiple microservices built using different stacks — like Node.js, Python, and Java — and each had its own dependencies and runtime 
+requirements. Docker helped us encapsulate each service in its own container along with all its dependencies, ensuring that it runs exactly the same across 
+development, staging, and production.
+
+We also used Docker as part of our CI/CD pipeline in Jenkins, where each service is built into a Docker image, scanned with SonarQube, tested, and then pushed to 
+Nexus. These images are then deployed into our Kubernetes cluster via Helm charts.
+
+Docker made it very easy for new developers to onboard — they just had to run docker-compose up and all services were up and running locally. Plus, since containers 
+are lightweight, we could spin them up and tear them down quickly for automated integration testing.
+
+Finally, Docker’s integration with monitoring and orchestration tools like Prometheus and Kubernetes made it ideal for production workloads, giving us full control
+over scaling and resource limits.

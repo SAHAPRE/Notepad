@@ -1,0 +1,57 @@
+"An Internet Gateway is attached to a VPC to allow resources in public subnets to have full two-way internet connectivity. It enables inbound and 
+outbound traffic. 
+A NAT Gateway, on the other hand, is used for private subnets. It allows instances in private subnets to initiate outbound connections to the internet 
+(like downloading updates or connecting to APIs) but prevents the internet from initiating connections back to them."
+
+In AWS, **Security Groups** and **Network Access Control Lists (NACLs)** are both used to control traffic to and from resources in your Virtual 
+Private Cloud (VPC). While they have similar purposes,they work differently and are used in different contexts. Here’s a breakdown of each:
+
+### 1. **Security Groups**
+- **Function:** Security Groups act as a virtual firewall for your EC2 instances to control incoming and outgoing traffic.
+- **Stateful:** Security groups are stateful, meaning if you allow incoming traffic from a specific IP or port, the return traffic is automatically
+ allowed regardless of any outbound rules.
+- **Operating Level:** Security Groups operate at the instance level, meaning they apply to individual EC2 instances (or other resources like RDS or
+ ELB).
+- **Rules:** Security Groups allow rules for both inbound (ingress) and outbound (egress) traffic. You define the protocol (TCP, UDP, ICMP), port
+ range, and source/destination IP address or CIDR block.
+- **Default Behavior:** By default, security groups are **deny all** for both inbound and outbound traffic. You must explicitly allow inbound traffic.
+- **Association:** Each EC2 instance can have multiple security groups associated with it, and each security group can apply to multiple instances.
+
+#### Example:
+- **Allow inbound SSH (port 22) traffic from a specific IP address:**
+  - Inbound Rule: Allow TCP traffic on port 22, from a specific IP (e.g., `192.168.1.100/32`).
+  - Outbound Rule: Allow all outbound traffic by default, but can be restricted based on use case.
+
+### 2. **Network Access Control Lists (NACLs)**
+- **Function:** NACLs control traffic at the subnet level. They act as a stateless firewall to control traffic entering and leaving a VPC subnet.
+- **Stateless:** NACLs are stateless, meaning that if you allow incoming traffic from a certain source, you must also explicitly allow the return 
+traffic for that connection.
+- **Operating Level:** NACLs apply to entire subnets, meaning all resources in that subnet are subject to the same NACL rules.
+- **Rules:** Like security groups, NACLs also allow rules for inbound (ingress) and outbound (egress) traffic. However, NACLs have numbered rules, 
+and the rules are evaluated in ascending order until a match is found.
+- **Default Behavior:** The default NACL allows all inbound and outbound traffic (it’s permissive by default).
+- **Association:** Each subnet in your VPC must be associated with exactly one NACL (but a NACL can be associated with multiple subnets).
+
+#### Example:
+- **Allow inbound HTTP (port 80) traffic from anywhere, but block everything else:**
+  - Inbound Rule 100: Allow TCP traffic on port 80, from `0.0.0.0/0`.
+  - Inbound Rule 200: Deny all other inbound traffic.
+  - Outbound Rule: Allow all outbound traffic.
+
+### Key Differences:
+| Feature                    | Security Groups                             | NACLs                                     |
+|----------------------------|---------------------------------------------|-------------------------------------------|
+| **Scope**                  | Applied to individual EC2 instances         | Applied to entire subnets                 |
+| **Stateful/Stateless**     | Stateful (automatic response to allowed inbound traffic) | Stateless (you need to allow both inbound and outbound traffic explicitly) |
+| **Default Rules**          | Deny all inbound traffic (allow outbound)   | Allow all inbound and outbound traffic (default) |
+| **Rule Evaluation**        | No order (all rules are evaluated)          | Rules are evaluated in order (numbered rules) |
+| **Use Cases**              | Typically used to control traffic for individual EC2 instances or services | Typically used to control traffic at the subnet level |
+
+### When to Use Which?
+- **Security Groups:** Use security groups when you want to control traffic to specific resources (like EC2 instances) with more flexibility. It's 
+often used to allow specific types of connections (e.g., HTTP, SSH) to specific instances.
+- **NACLs:** Use NACLs for controlling traffic at the subnet level, such as applying general access rules or blocking specific IP addresses from 
+accessing any resource within a subnet.
+
+Both are essential components of securing your AWS infrastructure and work together to ensure your network remains protected.
+

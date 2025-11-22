@@ -1,0 +1,199 @@
+To configure **Rolling Updates** for your autoscaling environment through **Jenkins** for deploying a new version of the code, you’ll need to automate the 
+deployment process while minimizing downtime by gradually replacing instances with the new version of the code. This can be achieved by integrating Jenkins with 
+your infrastructure (e.g., using **AWS EC2 Auto Scaling Groups** or similar services) and leveraging a **rolling update strategy**.
+
+Here are the general steps to set up a rolling update deployment strategy using Jenkins:
+
+### **Prerequisites:**
+1. **Jenkins Server**: Set up and configured.
+2. **Source Control (e.g., GitHub, GitLab)**: Jenkins is integrated with your source repository.
+3. **Infrastructure Automation Tools**: AWS CLI, Terraform, Ansible, or similar tools to manage your servers.
+4. **Application Containerization (Optional)**: Docker, Kubernetes, etc., if you are deploying containers.
+
+---
+
+### **Steps to Configure Rolling Updates in Jenkins for an Autoscaling Setup:**
+
+#### **1. Set Up Auto Scaling Group (ASG) and Load Balancer**
+Ensure your **Auto Scaling Group** (ASG) is set up to handle the required number of instances (e.g., 4 servers). You also need a **Load Balancer** (e.g., AWS ELB 
+or ALB) to manage traffic distribution to the healthy instances.
+
+- The Load Balancer will route traffic only to the healthy instances.
+- Auto Scaling will replace unhealthy instances automatically.
+
+#### **2. Jenkins Pipeline for Rolling Update Deployment**
+Create a **Jenkins pipeline** that will handle the rolling update process. You can use **AWS CLI**, **AWS SDKs**, or a **Containerized Solution (e.g., ECS,
+ Kubernetes)**.
+
+Below are the general steps you need to follow in your Jenkins pipeline to perform rolling updates:
+
+---
+
+#### **Step 1: Checkout the Latest Code**
+First, your pipeline should pull the latest version of your application code from your source control repository.
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/yourusername/yourrepo.git'
+            }
+        }
+```
+---
+
+#### **Step 2: Build the Application**
+In the next stage, build your application. This could involve compiling code, packaging it, or creating Docker images.
+
+```groovy
+        stage('Build') {
+            steps {
+                script {
+                    // Example: Build a Docker container if you are using Docker
+                    sh 'docker build -t my-app:${GIT_COMMIT} .'
+                }
+            }
+        }
+```
+
+---
+
+#### **Step 3: Deploy to a Single Instance (Rolling Update Begins)**
+To ensure a rolling update, you can follow these steps:
+
+1. **Select one instance** from your Auto Scaling Group to be updated.
+2. **Deploy the new version** of the application to that instance.
+3. Wait until the new version is successfully running and healthy.
+4. After validation, proceed to the next instance.
+
+For example, in AWS, you can use the **AWS CLI** to replace an instance within the Auto Scaling group.
+
+```groovy
+        stage('Rolling Update') {
+            steps {
+                script {
+                    // Here, we use the AWS CLI to terminate an instance in the Auto Scaling group,
+                    // causing AWS to replace it with a new one that will run the latest version of your code.
+                    
+                    // Terminate an instance (AWS CLI example)
+                    sh '''
+                    aws autoscaling update-auto-scaling-group \
+                        --auto-scaling-group-name your-auto-scaling-group \
+                        --min-size 1 --max-size 1 --desired-capacity 1
+                    '''
+                    
+                    // Optionally, you can add a wait or sleep here to ensure that the new instance is fully provisioned.
+                    sh 'sleep 60' // This is just an example. Adjust based on the time it takes for your instance to become healthy.
+                }
+            }
+        }
+```
+
+You can iterate over the instances in the Auto Scaling group and update one instance at a time, allowing the load balancer to route
+ traffic to the healthy instances. This ensures that your service remains available throughout the update process.
+
+---
+
+#### **Step 4: Verify Health Status**
+After each deployment, verify the health of the new instance. If you are using AWS, you can check the health status through the **Auto Scaling Group** or **Elastic Load Balancer** health checks.
+
+```groovy
+        stage('Verify Health') {
+            steps {
+                script {
+                    // AWS CLI to check the status of the instance
+                    sh 'aws elb describe-instance-health --load-balancer-name your-load-balancer'
+                    
+                    // If health check fails, you may want to terminate the failed instance
+                    // and let Auto Scaling replace it.
+                }
+            }
+        }
+```
+
+---
+
+#### **Step 5: Update Remaining Instances (Complete Rolling Update)**
+Once the first instance is successfully updated and healthy, continue the process to update the remaining instances one by one.
+
+```groovy
+        stage('Update Remaining Instances') {
+            steps {
+                script {
+                    // Repeat the process for remaining instances
+                    // E.g., Terminate one more instance, deploy, and verify health.
+                }
+            }
+        }
+```
+
+---
+
+#### **Step 6: Finalize the Update**
+Once all instances have been successfully updated, you can scale the Auto Scaling group back to its original size if needed (e.g., back to 4 instances).
+
+```groovy
+        stage('Finalize Update') {
+            steps {
+                script {
+                    // Scale the Auto Scaling Group back to the desired capacity.
+                    sh '''
+                    aws autoscaling update-auto-scaling-group \
+                        --auto-scaling-group-name your-auto-scaling-group \
+                        --desired-capacity 4
+                    '''
+                
+				}
+            }
+        }
+    }
+}
+```
+
+---
+
+#### **Step 7: Clean Up and Notifications**
+Finally, clean up any resources, send notifications to your team, and finalize the pipeline execution.
+
+```groovy
+        stage('Notify') {
+            steps {
+                script {
+                    // Notify via Slack, email, etc.
+                    slackSend channel: '#devops', message: "Rolling Update completed successfully!"
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+### **Rolling Update Strategies to Consider:**
+1. **Blue-Green Deployment**:
+   - Involves deploying the new version in a separate environment (green), then switching traffic from the old (blue) to the new environment.
+   - This requires more infrastructure but provides a quick way to rollback.
+
+2. **Canary Deployment**:
+   - A small subset of the traffic is routed to the new version (the canary), and if it's successful, the deployment is gradually expanded to the rest of the instances.
+   - Ideal for safer, incremental updates.
+
+3. **Rolling Update with Auto Scaling**:
+   - As described above, where you gradually update instances in the Auto Scaling Group one by one while maintaining the required number of healthy instances.
+
+---
+
+### **Additional Tools and Techniques to Use**
+1. **Ansible** or **Terraform**: To automate server provisioning and management.
+2. **AWS Elastic Load Balancer (ELB)**: Ensures traffic is routed only to healthy instances.
+3. **AWS Auto Scaling**: Manages instance scaling automatically as per load and health checks.
+4. **Container Orchestration (Kubernetes/ECS)**: If you're using containers, platforms like Kubernetes or AWS ECS make rolling updates even more manageable.
+5. **Health Checks**: Implement thorough health checks to make sure the application is running smoothly before proceeding with the next instance.
+
+---
+
+### **Conclusion**
+By following the above steps, you can configure a Jenkins pipeline for **rolling updates** in an **autoscaling environment**. The key is to ensure that traffic is gradually shifted to the new version without causing downtime. Integrating with tools like AWS Auto Scaling, Elastic Load Balancer, and automated health checks can help achieve a smooth and reliable rolling update process.

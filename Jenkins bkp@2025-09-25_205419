@@ -1,0 +1,137 @@
+Continuous Integration is a software development practice where developers frequently commit code changes into a shared repository, usually multiple times a day. 
+Each commit triggers an automated build and testing process, ensuring that the new code integrates well with the existing codebase.
+
+Key Concepts of CI:
+Frequent Commits: Developers commit code changes regularly to the version control system (e.g., Git).
+Automated Builds: Each commit triggers an automated process that compiles the code and builds the application to ensure that the code is valid.
+Automated Testing: After building, automated tests (unit tests, integration tests) are run to ensure that no new bugs have been introduced and that the application is working as expected.
+Immediate Feedback: If a test fails or a build error occurs, developers receive feedback immediately, allowing them to address issues quickly.
+Main Branch: The goal is to keep the main branch (or any other integration branch) in a deployable state at all times.
+CI Workflow:
+Developer commits code to a Git repository.
+A CI tool (e.g., Jenkins, GitHub Actions, GitLab CI) is triggered automatically.
+The code is pulled and compiled/builded.
+Automated tests are executed.
+If everything passes, the code is merged into the main branch.
+Continuous Deployment (CD)
+Continuous Deployment takes Continuous Integration one step further by automating the deployment of code directly to production after it passes through CI. This means that every change that successfully passes automated tests is automatically deployed to production without human intervention.
+
+Key Concepts of CD:
+Automated Deployment: Once the code passes CI and testing, it is automatically deployed to the production environment (or staging/production).
+Frequent Releases: Changes are pushed to production very frequently—sometimes multiple times a day, which allows for smaller, incremental updates.
+Zero Downtime: The process ensures that deployments happen without interrupting the service or user experience (using methods like blue-green deployment or canary releases).
+Monitoring and Rollback: Continuous Deployment usually involves monitoring to catch any issues quickly in production, and an automated rollback process can revert to the previous stable version if a problem is detected.
+CD Workflow:
+CI pipeline finishes successfully.
+The code is deployed to staging for further testing.
+Once staging passes tests, the code is automatically deployed to production.
+If an issue arises in production, an automated rollback may happen, or the system may trigger an alert to the team.
+
+
+Introduction :
+Continuous Deployment is a software engineering process in which product performance is transferred using automated submissions. 
+It helps testers to verify that codebase changes are correct and stable or not. The team can achieve continuous deployment by relying on
+infrastructure using a variety of testing steps. When each integration meets this release process,the app is updated with a new code.
+
+15 plugins - Build pipelines
+
+Continuous delivery is an automated way to push code changes to these production,development and testing environments.
+
+Node is a environment which allows you to create pipeline.
+
+Developer ---<commit code at github>----> Git hub---> server pe build through jenkins -----> deploy it in another server
+
+This pipeline known as continous integration and the deployment which takes place here is called continous deployment.
+
+In this pipeline, build test deploy takes place and that's why it is called as CI/CD Pipeline.
+
+Jenkins-:
+  917  ll
+  918  curl http://192.168.0.104:8080/job/demo-fourth/build?token=mysecrettoken
+  919  ls
+  920  history
+
+1. Code Commit: Developers commit code changes to a Git repository hosted on GitHub.
+2. Jenkins Build: Jenkins is triggered to build the code using Maven. Maven builds the code and runs unit tests.
+3. Code Analysis: Sonar is used to perform static code analysis to identify any code quality issues, security vulnerabilities, and bugs.
+4. Security Scan: AppScan is used to perform a security scan on the application to identify any security vulnerabilities.
+5. Deploy to Dev Environment: If the build and scans pass, Jenkins deploys the code to a development environment managed by Kubernetes.
+6. Continuous Deployment: ArgoCD is used to manage continuous deployment. ArgoCD watches the Git repository and automatically deploys new changes
+to the development environment as soon as they are committed.
+7. Promote to Production: When the code is ready for production, it is manually promoted using ArgoCD to the production environment.
+8. Monitoring: The application is monitored for performance and availability using Kubernetes tools and other monitoring tools.
+
+The different ways to trigger jenkins pipelines :-
+  - Poll SCM: Jenkins can periodically check the repository for changes and automatically build if changes are detected. 
+              This can be configured in the "Build Triggers" section of a job.
+              
+  - Build Triggers: Jenkins can be configured to use the Git plugin, which allows you to specify a Git repository and branch to build. 
+              The plugin can be configured to automatically build when changes are pushed to the repository.
+              
+  - Webhooks: A webhook can be created in GitHub to notify Jenkins when changes are pushed to the repository. 
+              Jenkins can then automatically build the updated code. This can be set up in the "Build Triggers" section of a job and in the GitHub
+			  repository settings.
+			  
+			  
+			  
+Build Periodically--> 2 MIN KA SCHEDULE KAREGA JOB, har 2 min me chalega job , changes aae honge tab v nahia aenge tabhi.
+
+POLL SCM--> 2 MIN KA SCHEDULE KAREGA JOB. lekin jab v koi naya change aaega git me tabhi job trigger karega.
+SCM- Source code management
+
+
+The different ways to trigger jenkins pipelines :-
+
+1. Poll SCM: Jenkins can periodically check the repository for changes and automatically build if changes are detected.This can be configured in the 
+"Build Triggers" section of a job.
+
+2. Build Triggers: Jenkins can be configured to use the Git plugin, which allows you to specify a Git repository and branch to build.The plugin can be
+configured to automatically build when changes are pushed to the repository.
+ 
+3. Webhooks: A webhook can be created in GitHub to notify Jenkins when changes are pushed to the repository.Jenkins can then automatically build 
+the updated code. This can be set up in the "Build Triggers" section of a job and in the GitHub repository settings.
+
+Backup Jenkins - Backing up Jenkins is a very easy process, there are multiple default and configured files and folders in Jenkins that you 
+ might want to backup.
+    - Configuration: The `~/.jenkins` folder. You can use a tool like rsync to backup the entire directory to another location.
+  
+    - Plugins: Backup the plugins installed in Jenkins by copying the plugins directory located in JENKINS_HOME/plugins to another location.
+    
+    - Jobs: Backup the Jenkins jobs by copying the jobs directory located in JENKINS_HOME/jobs to another location.
+    
+    - User Content: If you have added any custom content, such as build artifacts, scripts, or job configurations, to the Jenkins environment,
+	make sure to backup those as well.
+    
+    - Database Backup: If you are using a database to store information such as build results, you will need to backup the database separately.
+	This typically involves using a database backup tool, such as mysqldump for MySQL, to export the data to another location.
+
+rocess of Setting up a Backup and Restore Jenkins - EDUCBA
+https://www.educba.com/jenkins-backup/
+
+cd /var/lib/jenkins
+tar -czvf jobs_backup-v$date.tgz jobs
+tar -czvf jobs_backup-v$date.tgz plugin
+jobs-v202300817.tgz
+
+scp *.tgz prerna@backup_server_ip:/jenkins_backup
+
+
+Jenkins backup is a solution for keeping the backup of critical configuration settings related to Jenkins1. Jenkins has a backup plugin that 
+can be used to backup1. One of the backup plugins is Jenkins Thin Backup, which backs up all the data based on your schedule and handles the 
+backup retention. To make Jenkins backup, you must locate the Jenkins home folder,which is hidden by default. You can also backup the jobs 
+folder separately, which contains all the details of each job.	
+	
+
+
+JNLP :-  Java network launch Protocol :-  This allows Jenkins to distribute build tasks to multiple agents, providing scalability and improving 
+performance.
+	
+
+
+ 
+ 
+ 
+ sudo special privileges
+ 
+ userA  sudo  /etc/sudoers
+ 

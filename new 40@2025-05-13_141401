@@ -1,0 +1,68 @@
+
+ Weekly meeting reviews update and Escalation. Scheduling team meetings regularly to discuss both network
+issues.
+
+ Permissions, Special permissions &amp; ACL.Disk Management, Partitioning &amp; disk Quota.
+ Backup Strategy &amp; Achieving with Tar Compression with Gun zip, Bunzip2, XZ.
+ Setting up debugging, and performance tuning Linux servers.
+ Setting up and troubleshooting NFS ,SSH, http DNS.
+ Using IP-tables to protect network port and inbound outbound traffic.
+
+
+
+ Configure the telnet and SSH on Routers and Switches.
+
+Giving the reboot server by taking console through SSH and Telnet Services.
+ Daily health check of servers (Linux and Solaris).
+ Monthly clean-up of users and checking the status of user management.
+ Bash scripting knowledge.
+ Help tune performance and ensure high availability of infrastructure.
+ Design and develop infrastructure monitoring and reporting tools.
+ Develop and maintain configuration management solutions.
+ Monitor system performance.
+ Monitor network communication.
+and NMS Servers.
+ Monitoring the server and provide 24X7 support to all Customers.
+Management and Report configurations.
+ Issue Maintenance and Follow-ups (i.e. CSR/SR Raised and taking Follow-ups with CSR handler to get
+it resolved and provide the solutions within SLA).
+ User Management and Administration
+CREATION/MODIFICATION/DELETION, Controlling Access Permissions and Privileges 
+
+
+
+Conducted weekly team meetings to review network/server issues and manage escalations efficiently.
+
+Managed user accounts, including creation, modification, deletion, and access control using permissions and ACLs.
+
+Performed disk partitioning, disk quota management, and overall disk space monitoring.
+
+Implemented backup strategies using tar with compression tools like gzip, bzip2, and xz.
+
+Tuned system performance and configured debugging tools on Linux servers.
+
+Configured and resolved issues related to NFS, SSH, HTTP, and DNS services.
+
+Secured server environments using IP-tables to manage inbound and outbound traffic.
+
+Configured and maintained SSH and Telnet access on routers and switches for remote administration.
+
+Executed server reboots remotely through Telnet/SSH console access during maintenance operations.
+
+Performed daily health checks of Linux and Solaris servers to ensure operational stability.
+
+Conducted monthly user management audits, including account cleanup and permission reviews.
+
+Developed and maintained Bash scripts for system automation and administrative tasks.
+
+Monitored system and network performance to ensure high availability and reliability.
+
+Designed and deployed infrastructure monitoring and reporting tools for proactive issue detection.
+
+Created and maintained configuration management solutions to automate system setup and compliance.
+
+Provided 24x7 server monitoring and customer support across production systems.
+
+Handled issue tracking and resolution by raising CSR/SR tickets and ensuring SLA compliance.
+
+Managed access privileges and user rights to maintain secure and efficient user administration.

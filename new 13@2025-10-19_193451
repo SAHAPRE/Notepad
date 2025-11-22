@@ -1,0 +1,115 @@
+Here’s a **complete, interview-level answer** explaining how to check **cluster-level events and resource limits** in Kubernetes 👇
+
+---
+
+### **1️⃣ Checking Cluster-Level Events**
+
+Cluster events help you troubleshoot **why pods aren’t scheduled**, **why deployments fail**, or **why nodes go NotReady**.
+
+#### **A. Using kubectl**
+
+```bash
+kubectl get events --all-namespaces
+```
+
+* Shows all recent events across the cluster.
+* Useful for identifying scheduling issues, image pull errors, or crashes.
+
+#### **B. Sort by time**
+
+```bash
+kubectl get events --sort-by=.metadata.creationTimestamp -A
+```
+
+* Displays the latest events first (most useful during troubleshooting).
+
+#### **C. Filter by Namespace or Resource**
+
+```bash
+kubectl get events -n kube-system
+kubectl describe pod <pod-name> -n <namespace>
+```
+
+* Shows events specific to one namespace or object.
+
+#### **D. Cluster-Wide Tools**
+
+* **Lens** or **K9s** provide visual views of events.
+* **kubectl get events | grep <keyword>** filters errors quickly.
+
+✅ **Interview tip:**
+
+> “To debug cluster-wide issues, I use `kubectl get events -A` to get the full event history and sort by timestamp. This helps me identify issues like scheduling delays or CNI misconfigurations.”
+
+---
+
+### **2️⃣ Checking Resource Limits (CPU & Memory)**
+
+You can verify **what limits and requests** are defined for containers and **how much each node can handle**.
+
+#### **A. Check Pod-Level Resource Requests & Limits**
+
+```bash
+kubectl describe pod <pod-name> -n <namespace>
+```
+
+Look for:
+
+```
+Limits:
+  cpu:     500m
+  memory:  512Mi
+Requests:
+  cpu:     250m
+  memory:  256Mi
+```
+
+#### **B. Check Node Capacity and Allocations**
+
+```bash
+kubectl describe node <node-name>
+```
+
+Shows:
+
+* **Capacity** (total CPU/memory)
+* **Allocatable** (available for pods)
+* **Pods running** and resource pressure.
+
+#### **C. Get a Summary for All Pods**
+
+```bash
+kubectl top pod -A
+kubectl top node
+```
+
+Requires **metrics-server** to be running.
+
+#### **D. Check ResourceQuotas (per namespace)**
+
+```bash
+kubectl get resourcequota -n <namespace>
+kubectl describe resourcequota <quota-name> -n <namespace>
+```
+
+Shows how much CPU/memory the namespace is allowed to consume.
+
+✅ **Example Output:**
+
+```
+Resource Limits:
+  cpu:     10 (used: 6)
+  memory:  10Gi (used: 8Gi)
+```
+
+---
+
+### 🧠 **Interview-Level Summary Answer**
+
+> “To monitor cluster-level events, I use `kubectl get events -A` and sort by timestamp to identify any scheduling or node-level issues.
+> For resource usage, I check `kubectl top nodes/pods` for real-time metrics, and `kubectl describe` for static resource requests and limits.
+> I also ensure namespaces have ResourceQuotas configured to avoid resource exhaustion at the cluster level.”
+
+---
+
+Would you like me to include this in the **Kubernetes interview preparation PDF** under the “Troubleshooting & Monitoring” section?

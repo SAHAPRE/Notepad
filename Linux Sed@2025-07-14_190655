@@ -1,0 +1,16 @@
+sed '/^$/d' file.txt  -- for deleting all the blank lines of this file
+ls *.pdf *.txt - it will list all the files ending with pdf and txt
+ls -I "*.pdf" -I "*.txt" - it will list all the files except ending with pdf and txt
+ls | sed  -e 's/file1.txt/file1.jpg/g' - it will replace file1 with jpg
+
+var=$? - it will tell previous command runs successfully or not
+if var=0
+then ...
+
+grep -v is used for exception- except that everything will show
+
+EBS is a storage volume where we add disk store data in create filesystem to store data in a define size.. disk need to mount to VM
+we can resize the data according to the defined size of the disk. It can be attached and detached to the VM
+EFS- SAME AS EBS but can be connect to multiple ec2 instances. You do not need to tell it to create a file system of hundreds or 200 GBS.
+You simply create an ifsc and it grows and shrinks as you add or delete files.
+

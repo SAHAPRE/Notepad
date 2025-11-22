@@ -1,0 +1,93 @@
+Integrating **Helm with CI/CD** enables automated and consistent deployment of Kubernetes applications. Below is a practical guide to implementing CI/CD using **Helm**, typically
+ in conjunction with tools like **Jenkins**, **GitHub Actions**, or **GitLab CI**.
+
+---
+
+## 🚀 Why Use Helm in CI/CD?
+
+* Automates Kubernetes deployments.
+* Manages versions with Helm chart releases.
+* Clean rollback capability.
+* Templating allows dynamic configuration per environment.
+
+---
+
+## ✅ Typical CI/CD Workflow with Helm
+
+Here’s a basic workflow:
+
+1. **Code Commit** → Developer pushes code to Git.
+2. **CI Pipeline**:
+
+   * Run unit tests.
+   * Build Docker image.
+   * Push Docker image to registry (e.g., ECR, DockerHub).
+3. **CD Pipeline**:
+
+   * Render(provide/give) Helm chart with new image tag.
+   * Deploy to Kubernetes using `helm upgrade`.
+   * Run post-deploy tests or smoke tests.
+
+---
+
+## 🧪 Jenkins Example (Declarative Pipeline)
+
+```groovy
+pipeline {
+  agent any
+  environment {
+    IMAGE = "myrepo/myapp:${BUILD_NUMBER}"
+  }
+
+  stages {
+    stage('Build') {
+      steps {
+        sh 'docker build -t $IMAGE .'
+        sh 'docker push $IMAGE'
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        sh '''
+          helm upgrade myapp ./helm-chart \
+            --install \
+            --set image.repository=myrepo/myapp \
+            --set image.tag=${BUILD_NUMBER}
+        '''
+      }
+    }
+  }
+}
+```
+
+---
+
+## 🗂️ Folder Structure
+
+```
+.
+├── Dockerfile
+├── helm-chart/
+│   ├── Chart.yaml
+│   ├── values.yaml
+│   └── templates/
+├── app/
+└── .github/workflows/workflow.yaml
+```
+
+---
+g
+## 🔐 Secrets You’ll Typically Need
+
+* `KUBECONFIG`: Base64 encoded kubeconfig for GitHub/GitLab.
+* `DOCKER_USERNAME` / `DOCKER_PASSWORD` or token.
+* `HELM_REPO_USERNAME/PASSWORD` (if pushing to a chart repo).
+
+---
+
+Let me know if you want:
+
+* A working GitHub repo example.
+* GitLab CI or Argo CD integration.
+* Helm chart template with values.yaml override examples.

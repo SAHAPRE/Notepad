@@ -1,0 +1,122 @@
+pipeline {
+  agent any
+
+  environment {
+    SONARQUBE_ENV = 'SonarQube'
+    SONAR_TOKEN   = credentials('sonar-token')
+    DOCKER_IMAGE  = "my-app:${BUILD_NUMBER}"
+    DOCKER_REGISTRY = "your-registry.io/your-team"
+    KUBECONFIG_CRED = credentials('kubeconfig') // File-based kubeconfig
+    HELM_RELEASE   = "my-app-release"
+    HELM_CHART_DIR = "helm/my-app"             // Path to Helm chart
+    NAMESPACE      = "default"
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        git url: 'https://github.com/your-org/your-repo.git', branch: 'main'
+      }
+    }
+
+    stage('Build') {
+      steps {
+        sh 'mvn clean install -DskipTests'
+      }
+    }
+
+    stage('SonarQube Analysis') {
+      steps {
+        withSonarQubeEnv(SONARQUBE_ENV) {
+          sh """
+            mvn sonar:sonar \
+              -Dsonar.projectKey=my-app \
+              -Dsonar.host.url=${env.SONAR_HOST_URL} \
+              -Dsonar.login=${SONAR_TOKEN}
+          """
+        }
+      }
+    }
+
+    stage('Quality Gate') {
+      steps {
+        timeout(time: 2, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
+        }
+      }
+    }
+
+    stage('Docker Build & Push') {
+      steps {
+        sh """
+          docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE} .
+          docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}
+        """
+      }
+    }
+
+    stage('Helm Deploy') {
+      steps {
+        withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
+          sh '''
+            export KUBECONFIG=$KUBECONFIG_FILE
+
+            helm upgrade --install ${HELM_RELEASE} ${HELM_CHART_DIR} \
+              --namespace ${NAMESPACE} \
+              --set image.repository=${DOCKER_REGISTRY}/my-app \
+              --set image.tag=${BUILD_NUMBER} \
+              --set image.pullPolicy=Always
+          '''
+        }
+      }
+    }
+  }
+
+  post {
+    always {
+      echo "Build finished: ${currentBuild.currentResult}"
+    }
+  }
+}
+
+####################################################################################################################################
+
+Your Helm chart should have an values.yaml like:
+
+yaml
+Copy
+Edit
+image:
+  repository: your-registry.io/your-team/my-app
+  tag: "latest"
+  pullPolicy: IfNotPresent
+And deployment.yaml template like:
+
+yaml
+Copy
+Edit
+image: 
+  repository: {{ .Values.image.repository }}
+  tag: {{ .Values.image.tag }}
+  pullPolicy: {{ .Values.image.pullPolicy }}
+🧾 Jenkins Setup Summary
+Component	Configuration Needed
+SonarQube	Jenkins > SonarQube server config
+sonar-token	Jenkins secret text credential
+kubeconfig	Jenkins file credential with ~/.kube/config
+Docker daemon	Jenkins agent should have Docker installed
+Helm	Helm CLI must be installed on Jenkins agent
+
+✅ Done!
+You now have a full Jenkins CI/CD pipeline that:
+
+Checks out code
+
+Runs a Maven build
+
+Performs static code analysis with SonarQube
+
+Builds and pushes a Docker image
+
+Deploys to Kubernetes using Helm

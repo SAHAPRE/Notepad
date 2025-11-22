@@ -1,0 +1,124 @@
+Here’s a **clear, interview-ready explanation** for you 👇
+
+---
+
+### ⚙️ **What Are Taints and Tolerations in Kubernetes?**
+
+**Definition:**
+Taints and tolerations work **together** to control which **Pods can be scheduled on which Nodes**.
+They prevent Pods from being placed on inappropriate Nodes — ensuring proper isolation, performance, and workload distribution.
+
+---
+
+### 🧩 **Taints (Node Property)**
+
+A **taint** is applied **to a Node** and acts like a “**Do Not Schedule**” rule.
+
+It says:
+
+> “Don’t schedule Pods on this Node unless they specifically **tolerate** this taint.”
+
+**Syntax:**
+
+```
+kubectl taint nodes <node-name> key=value:effect
+```
+
+**Example:**
+
+```bash
+kubectl taint nodes node1 app=backend:NoSchedule
+```
+
+📌 This means:
+
+* Node `node1` is tainted.
+* Only Pods with a **matching toleration** (`app=backend`) can run on it.
+* Other Pods will be **kept away**.
+
+---
+
+### 🧪 **Taint Effects**
+
+| Effect               | Description                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------------- |
+| **NoSchedule**       | New Pods that don’t tolerate the taint won’t be scheduled on the node.                            |
+| **PreferNoSchedule** | Kubernetes will try to avoid scheduling Pods here but won’t strictly forbid it.                   |
+| **NoExecute**        | Existing Pods that don’t tolerate the taint will be **evicted**, and new ones won’t be scheduled. |
+
+---
+
+### 🧍‍♂️ **Tolerations (Pod Property)**
+
+A **toleration** is applied **to a Pod** and allows it to “**tolerate**” a node’s taint — meaning it can be scheduled there.
+
+**Example Pod spec:**
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backend-pod
+spec:
+  tolerations:
+  - key: "app"
+    operator: "Equal"
+    value: "backend"
+    effect: "NoSchedule"
+  containers:
+  - name: nginx
+    image: nginx
+```
+
+📌 This Pod can be scheduled on **any node tainted with `app=backend:NoSchedule`**.
+
+---
+
+### 🧠 **Use Cases**
+
+| Scenario                   | Description                                                                    |
+| -------------------------- | ------------------------------------------------------------------------------ |
+| **Dedicated nodes**        | Reserve specific nodes for special workloads (e.g., database or GPU nodes).    |
+| **Isolating environments** | Keep dev/test workloads separate from production workloads.                    |
+| **Node maintenance**       | Temporarily taint a node to stop new Pods from being scheduled during updates. |
+| **Quality of Service**     | Use taints to ensure high-priority workloads run on specific hardware.         |
+
+---
+
+### ⚙️ **Example Workflow**
+
+1. Taint the node:
+
+   ```bash
+   kubectl taint nodes gpu-node gpu=true:NoSchedule
+   ```
+
+2. Pod with toleration:
+
+   ```yaml
+   tolerations:
+   - key: "gpu"
+     operator: "Equal"
+     value: "true"
+     effect: "NoSchedule"
+   ```
+
+✅ Now only GPU-enabled Pods will run on `gpu-node`.
+
+---
+
+### 🧩 **In Summary**
+
+| Concept        | Applies To | Purpose                                    |
+| -------------- | ---------- | ------------------------------------------ |
+| **Taint**      | Node       | Repels Pods unless tolerated               |
+| **Toleration** | Pod        | Allows Pod to be scheduled on tainted node |
+
+**Think of it like this:**
+
+> *Taint = Node’s “keep out” sign*
+> *Toleration = Pod’s “permission slip” to enter*
+
+---
+
+Would you like me to add this **Taints and Tolerations** section into your Kubernetes Interview Q&A PDF as well?

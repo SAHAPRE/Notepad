@@ -1,0 +1,27 @@
+1.Inspect Pod Events: Check Exit Code
+kubectl get pod <pod> -o jsonpath='{.status.containerStatuses[0].state.terminated.exitCode}'
+kubectl logs <pod> --previous
+
+Retrieves output from the last run before it restarted.
+
+Validate Probes
+
+Temporarily disable or loosen livenessProbe/readinessProbe
+
+Increase initialDelaySeconds if startup is slow
+
+Confirm Command/Entrypoint
+Ensure your command and args in the Pod spec actually launch your service (vs. exiting immediately).
+
+Run Interactively
+
+kubectl run debug --image=<your-image> --restart=Never --attach --tty -- bash
+Manually start your process to see any hidden errors.
+
+Review Resource Limits
+If you see OOMKills, raise your container’s memory/CPU limits.
+
+Verify Config & Mounts
+Check that ConfigMaps, Secrets, and volume mounts are correct and contain the files/env‑vars your app needs.
+
+2. 

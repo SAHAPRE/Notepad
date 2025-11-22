@@ -1,0 +1,29 @@
+1. register in ansible
+ChatGPT said:
+ChatGPT
+In Ansible, the register keyword is used to capture the output of a task and store it in a variable, which can then be used in subsequent
+ tasks within the playbook. This is useful for handling results or conditions dynamically based on the execution of tasks.
+
+2. gather facts
+ChatGPT said:
+ChatGPT
+In Ansible, gathering facts refers to the process of collecting detailed information about the target hosts (servers) before any tasks in
+ the playbook are executed. This information can include facts such as the operating system, IP addresses, hardware details, memory, and 
+ other system properties.
+ 
+3. how to store variable in vars.yaml file?
+ user_details:
+  name: webuser
+  group: webgroup
+  home: /home/webuser
+  
+  at the time of execution, inside the playbook - variable block, in inventory- /etc/ansible/hosts- beside ip, vars.yaml file
+
+ansible-playbook -i inventory.ini playbook.yml -e "variable1=value1 variable2=value2"
+
+4.synchronize module- The synchronize module in Ansible is used to efficiently copy files or directories between remote machines or between
+ the local machine and a remote machine. It is a wrapper around the rsync command, providing an easy-to-use interface for performing file
+ synchronization tasks.
+
+This module is particularly useful for large files or directories where you want to avoid copying everything each time; it only transfers 
+changes (new or modified files), making it more efficient than traditional file copy methods like copy or fetch.

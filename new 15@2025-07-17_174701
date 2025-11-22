@@ -1,0 +1,22 @@
+linux- mount ebs
+unused resource  - clean up script
+disk removal
+ps aux , ps -ef 
+iops kaise badhati hai , disk full  hai -- how you will clean, inode, load avg , top , inode full ho gaya to kya karega(file system full hai 
+) - df -ih ,file temp hatate hai.
+
+
+/etc/fstab - mount ka file 
+
+how to crontab nahi chal rha .. var/log/syslog/
+
+cpu usage jaya ho rha hai...
+process ko kill nahi kar sakte hai ... lsof - lost of open files kon kon sa pid chal rha hai .. so we will clean 
+
+kill -9 is not wrking 
+
+/etc/hosts - local dns 
+
+facebook .com /etc/hosts me define hai ... 
+
+etc.resolve.com me check karta hai .. server define hai ya nahi 

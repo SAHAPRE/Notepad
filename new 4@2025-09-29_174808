@@ -1,0 +1,31 @@
+apiversion: v1/apps
+kind: deployment
+metadata:
+     name : nginx_pod
+	 labels: 
+	   app : nginx
+spec:
+ replicas : 4
+ container :
+    -name : pod
+     image : nginx : latest
+	 ports :
+	 containerport :80
+	 
+	 
+	 /app
+	 /checkout
+	 
+kubectl describe po pod_name
+kube
+
+from node 2.0 
+run apt-get update
+copy . .
+wrkdir /apps
+expose 3000
+cmd ["node"}
+
+what do you mean by input and parameter in jenkins
+
+	 

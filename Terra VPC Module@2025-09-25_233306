@@ -1,0 +1,159 @@
+Here's how you can structure the VPC module and how to create the zip file.
+
+### 1. **Create the VPC Module**
+
+You can organize your Terraform code by creating a VPC module that can be reused in different environments. This VPC module will contain 
+the resources for creating a VPC, Subnet, Internet Gateway, and Route Table.
+
+#### VPC Module File Structure:
+```
+terraform-vpc-module/
+  ├── main.tf
+  ├── variables.tf
+  ├── outputs.tf
+  └── README.md
+```
+
+#### 2. **Terraform VPC Module Code**
+
+**`main.tf`** (VPC creation logic)
+
+```hcl
+resource "aws_vpc" "main" {
+  cidr_block = var.vpc_cidr_block
+  enable_dns_support = true
+  enable_dns_hostnames = true
+  tags = {
+    Name = var.vpc_name
+  }
+}
+
+resource "aws_subnet" "main_subnet" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = var.subnet_cidr_block
+  availability_zone       = var.availability_zone
+  map_public_ip_on_launch = true
+  tags = {
+    Name = var.subnet_name
+  }
+}
+
+resource "aws_internet_gateway" "main_igw" {
+  vpc_id = aws_vpc.main.id
+  tags = {
+    Name = var.igw_name
+  }
+}
+
+resource "aws_route_table" "main_route_table" {
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.main_igw.id
+  }
+  tags = {
+    Name = var.route_table_name
+  }
+}
+
+resource "aws_route_table_association" "main_route_table_association" {
+  subnet_id      = aws_subnet.main_subnet.id
+  route_table_id = aws_route_table.main_route_table.id
+}
+```
+
+**`variables.tf`** (Input variables for the module)
+
+```hcl
+variable "vpc_cidr_block" {
+  description = "The CIDR block for the VPC"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+
+variable "subnet_cidr_block" {
+  description = "The CIDR block for the subnet"
+  type        = string
+  default     = "10.0.1.0/24"
+}
+
+variable "vpc_name" {
+  description = "The name of the VPC"
+  type        = string
+  default     = "MyVPC"
+}
+
+variable "subnet_name" {
+  description = "The name of the subnet"
+  type        = string
+  default     = "MySubnet"
+}
+
+variable "availability_zone" {
+  description = "The availability zone for the subnet"
+  type        = string
+  default     = "us-west-2a"
+}
+
+variable "igw_name" {
+  description = "The name of the Internet Gateway"
+  type        = string
+  default     = "MyIGW"
+}
+
+variable "route_table_name" {
+  description = "The name of the Route Table"
+  type        = string
+  default     = "MyRouteTable"
+}
+```
+
+**`outputs.tf`** (Outputs for the module)
+
+```hcl
+output "vpc_id" {
+  description = "The ID of the VPC"
+  value       = aws_vpc.main.id
+}
+
+output "subnet_id" {
+  description = "The ID of the subnet"
+  value       = aws_subnet.main_subnet.id
+}
+
+output "internet_gateway_id" {
+  description = "The ID of the Internet Gateway"
+  value       = aws_internet_gateway.main_igw.id
+}
+```
+
+#### 3. **How to Use the Module in Your Main Configuration**
+
+Now that you have created the module, you can use it in your main Terraform configuration by referencing the module like this:
+
+**`main.tf` in the root project:**
+
+```hcl
+module "vpc" {
+  source            = "./terraform-vpc-module"
+  vpc_cidr_block    = "10.0.0.0/16"
+  subnet_cidr_block = "10.0.1.0/24"
+  vpc_name          = "MyCustomVPC"
+  subnet_name       = "MyCustomSubnet"
+  availability_zone = "us-west-2b"
+  igw_name          = "MyCustomIGW"
+  route_table_name  = "MyCustomRouteTable"
+}
+```
+
+#### 4. **Packaging the Module into a Zip File**
+
+Now that you have the module and configuration, you can create a zip file for easy distribution or sharing. Here's how you can do it:
+
+1. **Navigate to the directory containing the `terraform-vpc-module` folder**.
+2. **Use a terminal or file explorer to compress the `terraform-vpc-module` folder into a zip file**.
+
+On a **Linux or macOS** terminal, use the following command to create the zip file:
+
+```bash
+zip -r terraform-vpc-module.zip terraform-vpc-module/

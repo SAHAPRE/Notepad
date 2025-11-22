@@ -1,0 +1,58 @@
+What is swap and when is it used? - Yes — much slower than RAM, because it's on disk.
+Using swap excessively leads to high disk I/O and slow performance — this is called swapping. Swap is a type of disk space that your Linux system uses as virtual memory when RAM is full.
+Situation	              What Happens
+RAM is sufficient	    Swap is not used
+RAM is getting full 	Linux starts to use swap for less-used pages
+RAM is completely used	Swap prevents crashes (but slows down system)
+free -h
+
+Where would look to find system logs? --cat /var/log/syslog
+
+How can I see all processes that are running? How about which ones are taking up the most CPU/Memory? ps aux --sort=-%cpu | head -n 10 OR ps aux --sort=-%mem | head -n 10 or TOP(Press c or M)
+
+How do you restart a service? systemctl
+
+How do you see what IP address is assigned to the box? - ip a OR ifconfig
+
+How do you install a package for both RHEL and Ubuntu/Debian? - sudo apt update ; sudo apt install
+
+What is /etc/fstab used for? --/etc/fstab (file system table) is a configuration file in Linux that defines how and what filesystems should be mounted automatically at boot time.
+
+How do you format a partition/drive? ************
+
+What is /root used for?-- /root is the home directory of the root user, who is the superuser (administrator) in a Linux system.
+
+What is a user’s $PATH?--$PATH is an environment variable that tells the shell where to look for executable files when you run a command. echo $PATH
+
+What various commands are used to extract files from an archive? -- TAR, UNZIP, GUNZIP
+
+Some tougher ones:
+
+What is an inode, and what is it used for? What can you do with an inode?
+
+What commands would be used to add a new drive to a volume group and extend a logical volume? mount mkfs
+
+What is /proc used for? How about /sys?
+
+How do you display which kernel modules are loaded? How do you load a module? Where do you configure it so a module loads on boot? How do you unload a module?
+
+What is “load average”? What intervals is load average shown as? How do you show the load average?
+
+How do you show which ports are being listened on? netstat -tunlp
+
+How do you configure the firewall? (bonus points here if you can name how to do it using the distro specific tools and the “old school” tool)
+
+How would you automate repetitive tasks on a Linux server using scripting tools like Bash?
+
+The server is unresponsive to network requests. What steps would you take to diagnose and resolve the network connectivity issue?
+A website hosted on your server is experiencing slow response times. How would you troubleshoot and identify potential bottlenecks?
+
+The main server storage is running out of space. How would you identify the culprit files and clean up the disk?
+
+A critical application's performance is suffering due to high disk I/O wait. How would you investigate and diagnose the cause?
+
+A user reports they cannot log in via SSH. How would you troubleshoot and fix the issue? --- 
+
+You need to create a new user with sudo privileges and assign them to a specific group. Describe the steps involved.
+
+A specific program is consuming excessive CPU resources, impacting other applications. How would you identify the program and address the issue? --ps aux 

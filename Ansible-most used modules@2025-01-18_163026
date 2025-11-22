@@ -1,0 +1,107 @@
+1. System Modules
+apt: Manages packages on Debian-based systems (like Ubuntu).
+
+Example: apt: name=nginx state=latest
+yum: Manages packages on RedHat-based systems (like CentOS).
+
+Example: yum: name=nginx state=latest
+service: Manages services (start, stop, restart, enable).
+
+Example: service: name=nginx state=started enabled=yes
+user: Manages users on a system.
+
+Example: user: name=john state=present
+group: Manages groups on a system.
+
+Example: group: name=developers state=present
+command: Runs commands on remote systems.
+
+Q1. Difference between command module and shell module
+
+Example: command: ls -l /home
+shell: Runs shell commands on remote systems.
+
+Example: shell: echo "Hello, World!"
+hostname: Sets the hostname of a system.
+
+Example: hostname: name=webserver
+timezone: Configures system time zones.
+
+Example: timezone: name=UTC
+cron: Manages cron jobs.
+
+Example: cron: name="backup" minute="0" hour="2" job="/usr/bin/backup"
+2. File/Directory Management
+
+
+     Q2. Difference between COPY and FETCH module
+	 Q3. When we use template module
+	 
+copy: Copies files to remote systems.
+
+Example: copy: src=/path/to/local/file dest=/path/to/remote/file
+template: Copies and processes Jinja2 templates to remote systems.
+
+Example: template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+file: Manages file and directory properties (permissions, ownership).
+
+Example: file: path=/tmp/example.txt owner=root group=root mode=0644
+synchronize: Synchronizes files and directories to/from remote systems.
+
+Example: synchronize: src=/local/dir dest=/remote/dir
+3. Cloud Modules
+ec2: Manages EC2 instances in AWS.
+
+Q. Please read ping module
+Example: ping:
+
+5. Database Modules
+mysql_db: Manages MySQL databases.
+
+
+
+6. Application Deployment
+git: Manages Git repositories.
+
+Example: git: repo=https://github.com/user/repo dest=/path/to/dir
+docker_compose: Manages Docker Compose applications.
+
+unarchive: Extracts files from archives (e.g., tar, zip).
+Example: unarchive: src=/path/to/archive.tar dest=/path/to/dest/
+
+debug: Prints debug messages.
+
+Example: debug: msg="This is a debug message"
+
+wait_for: Waits for a condition to be met, such as a port being open.
+
+Example: wait_for: host=localhost port=80 state=started
+register: Saves output from a task for use in subsequent tasks.
+
+Example:
+yaml
+Copy
+- name: Get disk usage
+  shell: df -h
+  register: disk_usage
+  
+8. Package Management
+pip: Manages Python packages.
+
+Example: pip: name=ansible state=latest
+
+npm: Manages Node.js packages.
+
+Example: npm: name=express state=latest
+
+
+Example: lineinfile: path=/etc/hosts line="127.0.0.1 myhostname"
+replace: Replaces text in a file.
+
+Example: replace: path=/etc/config.something regexp="old_value" replace="new_value"
+
+2. synchronize module:
+The synchronize module is typically used to synchronize directories between the local and remote machines. It uses rsync in the background, making it more efficient for copying 
+large directories and for handling directory structures.
+
+

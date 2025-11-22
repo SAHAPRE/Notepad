@@ -1,0 +1,67 @@
+docker ps -a | grep kind
+kind delete cluster --name kind
+ kind create cluster --name kind --image kindest/node:v1.24.15
+ 
+root@Master:~# kubectl get nodes
+NAME                 STATUS   ROLES           AGE    VERSION
+kind-control-plane   Ready    control-plane   2m8s   v1.24.15
+
+ kind create cluster --name kind-worker-cluster --config kind-cluster.yaml --verbosity 9
+ 
+ root@Master:~# kubectl config get-contexts
+CURRENT   NAME                          CLUSTER               AUTHINFO              NAMESPACE
+          kind-kind                     kind-kind             kind-kind
+*         kind-worker-cluster           kind-worker-cluster   kind-worker-cluster
+          kubernetes-admin@kubernetes   kubernetes            kubernetes-admin
+		  
+root@Master:~# kubectl config use-context kind-kind
+Switched to context "kind-kind".
+
+root@Master:~# kubectl config use-context kind-worker-cluster
+Switched to context "kind-worker-cluster".
+root@Master:~# kubectl get nodes
+NAME                           STATUS   ROLES           AGE   VERSION
+worker-cluster-control-plane   Ready    control-plane   40m   v1.24.15
+worker-cluster-worker          Ready    <none>          39m   v1.24.15
+
+
+
+root@Master:~# docker ps -a | grep kind
+e493c594bdda   kindest/node:v1.24.15    "/usr/local/bin/entr…"   17 minutes ago   Up 17 minutes               127.0.0.1:33017->6443/tcp                   kind-control-plane
+09ccd8521a8f   kindest/node:v1.24.15    "/usr/local/bin/entr…"   46 minutes ago   Up 19 minutes               127.0.0.1:33733->6443/tcp                   worker-cluster-control-plane
+9ed7fd318b2b   kindest/node:v1.24.15    "/usr/local/bin/entr…"   46 minutes ago   Up 19 minutes                                                           worker-cluster-worker
+
+
+
+ 
+  kubectl config get-contexts
+  docker ps -a | grep kind
+  kind delete cluster --name kind
+docker rm -f $(docker ps -aq --filter "name=kind") 2>/dev/null
+docker system prune -af
+kind create cluster --name kind --image kindest/node:v1.27.3 --verbosity 6
+
+ kubectl config use-context kind-worker-cluster
+
+
+.0y][
+i';]
+'[===================|\\\\\\\\\\\\\\\\\\\\\\\\\\\\\]]
+kind delete cluster --name kind
+docker rm -f $(docker ps -aq --filter "name=kind") 2>/dev/null
+docker system prune -af
+
+
+
+nano config.yaml
+kind create cluster --name kind --config config.yaml --image kindest/node:v1.27.3
+kubectl get nodes
+ 
+ 
+ kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+
+

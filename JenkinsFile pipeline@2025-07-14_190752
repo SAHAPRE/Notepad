@@ -1,0 +1,251 @@
+pipeline {
+
+agent {}   Question
+
+tools {}
+
+parameter {}  Question
+
+triggers {}   Question
+
+environment {}
+
+stages {}  - parallel
+
+post {}  
+
+}
+
+
+A----B-----C|| D ---
+
+
+pipeline {
+	agent any
+        stages {
+	         stage ('series A') {
+	            steps {
+		          echo "hi"
+	            }
+	        } 
+                stage ('series B') {
+	               steps {
+		              echo "bye"
+                   }
+	        }
+	         stage ('check parallel') {
+                parallel {
+                    stage ('series c') {
+                        steps {
+                          echo "hi c"
+                        }
+                    }
+                    stage ('series D') {
+                        steps {
+                              echo "hi d"
+                        }
+                    }
+                }
+            }
+        }  
+	}
+	=====================================
+	
+	pipeline {
+    agent any  // This will run the pipeline on any available agent
+    
+    environment {
+        // Define environment variables for the app
+        APP_DIR = '/path/to/your/app'  // Path to the app directory on the agent
+        BRANCH = 'main'                // Branch to deploy
+        BUILD_DIR = 'build'            // Build output directory
+        REMOTE_SERVER = 'user@server.com'  // Remote server SSH login
+        DEPLOY_DIR = '/var/www/app'    // Remote server deploy directory
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the code from the Git repository
+                script {
+                    echo "Checking out branch: ${BRANCH}"
+                    git branch: "${BRANCH}", url: 'https://github.com/your/repository.git'
+                }
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                // Install Node.js dependencies
+                script {
+                    echo "Installing dependencies..."
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Run the build command (e.g., 'npm run build')
+                script {
+                    echo "Running build..."
+                    sh 'npm run build'    sh 'myscript.sh'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Deploy the build to the remote server using rsync or SCP
+                script {
+                    echo "Deploying build to the server..."
+                    sh """
+                    rsync -avz --delete ${BUILD_DIR}/ ${REMOTE_SERVER}:${DEPLOY_DIR}/
+                    """
+                }
+            }
+        }
+
+        stage('Restart Server') {
+            steps {
+                // Optionally, restart the server to apply changes (this depends on your app setup)
+                script {
+                    echo "Restarting server..."
+                    sh """
+                    ssh ${REMOTE_SERVER} 'sudo systemctl restart myapp-service'
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Deployment successful!"
+        }
+        failure {
+            echo "Deployment failed!"
+        }
+    }
+}
+
+
+
+====
+
+pipeline {
+    agent any
+    environment {
+        MY_ENV_VAR = 'value'
+    }
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    echo 'Building project'
+                    sh './build.sh'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                script {
+                    echo 'Running tests'
+                    sh './run_tests.sh'
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                    echo 'Deploying project'
+                    sh './deploy.sh'
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
+
+
+=============
+
+pipeline {
+    agent any
+
+    environment {
+        // Set AWS instance details
+        AWS_INSTANCE = 'your-aws-instance-ip'   // The public IP address of your AWS EC2 instance
+        AWS_USER = 'ec2-user'                   // The SSH user (ec2-user, ubuntu, etc.)
+        AWS_KEY_PATH = '/path/to/your/aws/private-key.pem'  // Path to your AWS private key for SSH access
+        FLASK_APP_DIR = '/path/to/your/flask/app'  // Directory where the Flask app resides on the EC2 instance
+        FLASK_VENV_DIR = '/path/to/venv'          // Path to the virtual environment
+    }
+
+    stages {
+        stage('Clone repository') { 
+            steps {
+                git 'https://your-repository-url.git'  // Clone your repository containing the Flask app
+            }
+        }
+
+        stage('Install dependencies') {
+            steps {
+                script {
+                    // SSH into AWS instance and install dependencies
+                    sh """
+                    ssh -i ${AWS_KEY_PATH} ${AWS_USER}@${AWS_INSTANCE} << EOF
+                        cd ${FLASK_APP_DIR}
+                        python3 -m venv ${FLASK_VENV_DIR}  # Create a virtual environment
+                        source ${FLASK_VENV_DIR}/bin/activate  # Activate the virtual environment
+                        pip install -r requirements.txt  # Install dependencies
+                    EOF
+                    """
+                }
+            }
+        }
+
+        stage('Deploy Flask Application') {
+            steps {
+                script {
+                    // SSH into AWS instance and deploy the Flask application using Gunicorn
+                    sh """
+                    ssh -i ${AWS_KEY_PATH} ${AWS_USER}@${AWS_INSTANCE} << EOF
+                        cd ${FLASK_APP_DIR}
+                        source ${FLASK_VENV_DIR}/bin/activate  # Activate virtual environment
+						systemctl restart myapplication
+                    EOF
+                    """
+                }
+            }
+        }
+
+        stage('Test Deployment') {
+            steps {
+                script {
+                    // Perform a simple curl to verify the app is running
+                    sh """
+                    curl http://${AWS_INSTANCE}:8000  # Test the deployed app
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Flask app deployed successfully!'
+        }
+
+        failure {
+            echo 'Deployment failed. Check the logs for errors.'
+        }
+    }
+}

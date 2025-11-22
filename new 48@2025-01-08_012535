@@ -1,0 +1,183 @@
+ 2011  nano age.sh
+ 2012  cut -d: -f4 /root/Scripting/user_data.json
+ 2013  awk "{print $4}" /root/Scripting/user_data.json
+ 2014  cut -d: -f5 /root/Scripting/user_data.json
+ 2015  awk -F: "{print $4}" /root/Scripting/user_data.json
+ 2016  awk -F'":' "{print $4}" /root/Scripting/user_data.json
+ 2017  awk -F'":' "{print $2}" /root/Scripting/user_data.json
+ 2018  cat /root/Scripting/user_data.json
+ 2019  cat /root/Scripting/user_data.json|awk -F'":' "{print $4}"
+ 2020  cat /root/Scripting/user_data.json|awk -F'":' "{print $1}"
+ 2021  cat /root/Scripting/user_data.json|tail -1
+ 2022  cat /root/Scripting/user_data.json|tail -2
+ 2023  cat /root/Scripting/user_data.json|grep '{'
+ 2024  cat /root/Scripting/user_data.json|grep '{'|cut -d: -f4
+ 2025  cat /root/Scripting/user_data.json|grep '{'|cut -d ":" -f4
+ 2026* cat /root/Scripting/user_data.json|grep '{'|cut
+ 2027  cat /root/Scripting/user_data.json|grep '{'
+ 2028  cat /root/Scripting/user_data.json|grep '{'|awk -F: '{Print $5}'
+ 2029  cat /root/Scripting/user_data.json|grep '{'|awk -F: '{Print $4}'
+ 2030  cat /root/Scripting/user_data.json|grep '{'|awk -F: '{Print $3}'
+ 2031  cat /root/Scripting/user_data.json|grep '{'|awk -F, '{Print $3}'
+ 2032  vi age.sh
+ 2033  nano age.sh
+ 2034  sh age.sh
+ 2035  nano user_data.json
+ 2036  sh age.sh
+ 2037  cat /root/Scripting/user_data.json|grep '{'|awk -F, '{Print $3}'
+ 2038  cat /root/Scripting/user_data.json|awk -F, '{Print $3}'
+ 2039  cat /root/Scripting/user_data.json|awk -F, '{Print $5}'
+ 2040* cat /root/Scripting/user_data.json|awk -F, '{Print $5}'
+ 2041  cat /root/Scripting/user_data.json|grep '{'|cut -d ":" -f4
+ 2042  cat /root/Scripting/user_data.json|cut -d ":" -f4
+ 2043  cat user_data.json
+ 2044  cat user_data.json | awk -F: '{print $4}'
+ 2045  cat user_data.json | awk -F: '{print $2}'
+ 2046  cat user_data.json | awk -F: '{print $3}'
+ 2047  cat user_data.json | awk -F: '{print $3}'| cut -d} -f1
+ 2048  cat user_data.json | grep '{'| awk -F: '{print $3}'| cut -d} -f1
+ 2049  cat user_data.json | grep '{'| awk -F: '{print $3}'| cut -d} -f1
+ 2050  nano age.sh
+ 2051  sh age.sh
+ 2052  nano age.sh
+ 2053  sh age.sh
+ 2054  nano age.sh
+ 2055  echo "3/3"|bc
+ 2056  echo "10/3"|bc
+ 2057  echo "10+3"|bc
+ 2058  echo "30+25+40"|bc
+ 2059  echo "95/3"|bc
+ 2060  nano age.sh
+ 2085  cd
+ 2086  touch /home/user/uploads
+ 2087  mkdir /home/user/uploads
+ 2088  cd /home/
+ 2089  mkdir /user
+ 2090  cd /user/
+ 2091  mkdir uploads
+ 2092  cd uploads
+ 2093  cd
+ 2094  cd /var/log/
+ 2095  ls
+ 2096  mkdir file_monitor.log
+ 2097  cat ubuntu-advantage.log
+ 2098  cd
+ 2099  rm -rf /var/log/file_monitor.log/
+ 2100  rm -rf /home/user/
+ 2101  ls
+ 2102  cd /home/
+ 2103  ls
+ 2104  cd
+ 2105  cd Scripting/
+ 2106  ls
+ 2107  nano monitor.sh
+ 2108  ls -lrt
+ 2109  echo $(ls)
+ 2110  echo $(ls -lrt)
+ 2111  echo $(ls -lrt|awk '{$(NF -1)}')
+ 2112  echo $(ls -lrt|awk '{$(NF)}')
+ 2113  echo $(ls -lrt|awk '{$NF}')
+ 2114  echo $(ls -lrt|awk '{$9}')
+ 2115  echo $(ls -lrt|awk -F' ' '{$NF}')
+ 2116  echo $(ls -lrt|awk -F" " '{$NF}')
+ 2117  ls -lrt
+ 2118* ls -lrt|awk '{$1
+ 2119  echo $(ls -lrt|awk '{print $(NF -1)}')
+ 2120  echo $(ls -lrt|awk '{print $(NF)}')
+ 2121  echo $(ls -lrt|awk '{print $(NF-1) $(NF)}')
+ 2122  echo $(ls -lrt|awk '{print $(NF -2) $(NF-1) $(NF)}')
+ 2123  echo $(ls -lrt|awk '{print $(NF -2)," ", $(NF-1) $(NF)}')
+ 2124  for i in `seq 1 100` ; do echo $(ls -lrt|awk '{print $(NF -2)," ", $(NF-1) $(NF)}');done
+ 2125  ls -lrt
+ 2126  for i in `ls -lrt`;do echo $i;done
+ 2127  for i in `ls -lrt`;do echo $i|awk '{print $NF}';done
+ 2128  ls -lrt
+ 2129  ls -lrt|awk '{print $NF}'
+ 2130  ls -lrt|awk '{print $(NF -2) $(NF -1) $NF}'
+ 2131  ls -lrt|awk '{print $(NF -2)," ", $(NF -1)," ", $NF}'
+ 2132  ls -lrt|awk '{print $(NF -3)," " ,$(NF -2)," ", $(NF -1)," ", $NF}'
+ 2133  ls -lrt|awk '{print $(NF -3)," ",$(NF -2)," ", $(NF -1)," ", $NF}'
+ 2134  ls -lrt|awk '{print $($(NF -2)," ", $(NF -1)," ", $NF}'
+ 2135  ls -lrt|awk '{print $(NF -2)," ", $(NF -1)," ", $NF}'
+ 2136  ls -lrt|awk '{print $(NF -3) $(NF -2)," ", $(NF -1)," ", $NF}'
+ 2137  ls -lrt|awk '{print $6 $(NF -2)," ", $(NF -1)," ", $NF}'
+ 2138  ls -lrt|awk '{print $6 $(NF -2)," ", $(NF -1)," ", $NF}'|grep -v total
+ 2139  ls -lrt|awk '{print $6 $(NF -2)," ", $(NF -1)," ", $NF}'|grep -v total > /tmp/old.txt
+ 2140  touch mk.txt
+ 2141  ls -lrt|awk '{print $6 $(NF -2)," ", $(NF -1)," ", $NF}'|grep -v total > /tmp/new.txt
+ 2142  diff /tmp/old.txt /tmp/new.txt
+ 2143  diff /tmp/old.txt /tmp/new.txt |grep -v >
+ 2144  diff /tmp/old.txt /tmp/new.txt |grep -v '>'
+ 2145  diff /tmp/old.txt /tmp/new.txt |tail -1
+ 2146  diff /tmp/old.txt /tmp/new.txt |tail -1|awk -F> '{print $1}'
+ 2147  diff /tmp/old.txt /tmp/new.txt |tail -1|awk -F'>' '{print $1}'
+ 2148  diff /tmp/old.txt /tmp/new.txt |tail -1|awk -F'>' '{print $2}'
+ 2149  diff /tmp/old.txt /tmp/new.txt |tail -1|awk -F'>' '{print $2}' > /tmp/a.log
+ 2150  cat /tmp/a.log
+ 2151  while sleep 2; do echo thinking; done
+ 2152  while True; do echo hi;done
+ 2153  while ; do echo hi;done
+ 2154  while true; do echo hi;done
+ 2155  nano age.sh
+ 2156  sh age.sh
+ 2157  nano age.sh
+ 2158  sh age.sh
+ 2159  nano age.sh
+ 2160  sh age.sh
+ 2161  cat a1.txt
+ 2162  nano age.sh
+ 2163  cd
+ 2181  ls -lrt|awk '{print $(NF -3) $(NF -2)," ", $(NF -1)," ", $NF}'
+ 2182* ls -lrt|awk '{print $6,$7,$8,$9}'
+ 2183  nano monitor.sh
+ 2184  bash monitor.sh
+ 2185  nano monitor.sh
+ 2186  cd
+ 2187  cd /home/
+ 2188  cd
+ 2189  cd /home/user/uploads
+ 2190  cd /home/user/
+ 2191  mkdir /home/user
+ 2192  mkdir /uploads
+ 2226  cd /var/log
+ 2227  cat files.log
+ 2228  cd Scripting/
+ 2229  nano monitor.sh
+ 2230  cd
+ 2231  cd Scripting/
+ 2232  nano monitor.sh
+ 2233  sh monitor.sh
+ 2234  cat monitor.sh
+ 2235  cat /var/log/files.log
+ 2236  nano monitor.sh
+ 2237  cat /var/log/files.log
+ 2264  for i in `ls -lrth`;do echo $i;done
+ 2265  ls -lrth
+ 2266  ls -lrth|head -1
+ 2267  ls -lrth|head -2
+ 2268  for i in `seq 1 10`;do ls -lrth|head -$i;done
+ 2269  for i in `seq 1 10`;do ls -lrth|head -$i;sleep 2;done
+ 2270  for i in `ls -lrth`;do echo $i;sleep 4;done
+ 2271  for i in `seq 1 10`;do ls -lrth|head -$i;sleep 2;done
+ 2272  for i in `seq 1 10`;do ls -lrth|head -$i; echo "**************************";sleep 2;done
+ 2273  ls -lrth
+ 2274  ls -lrth|head -1
+ 2275  ls -lrth|head -2
+ 2276  ls -lrth|head -3
+ 2277  ls -lrth|head -3|tail -1
+ 2278  ls -lrth|head -4|tail -2
+ 2279  ls -lrth|head -4|tail -2|tail -1
+ 2280  ls -lrth|head -4|tail -1
+ 2281  ls -lrth|head -5|tail -1
+ 2282  ls -lrth|head -6|tail -1
+ 2283  ls -lrth|head -5|tail -1
+ 2284  ls
+ 2285  cat monitor.sh
+ 2286  ls -lrth /home/upload
+ 2287  while true;do echo hi;done
+ 2288  while true;do echo hi;sleep 2done
+ 2289  while true;do echo hi;sleep 2;done
+ 2290  while true;do ls -lrt /home/upload;sleep 2;done
+ 2291  cat monitor.sh
+ 2292  while true;do ls -lrt /home/upload|awk '{print $6,$7,$8,$9}';sleep 2;done
+ 2293  while true;do ls -lrt /home/upload|awk '{print $6,$7,$8,$9}'> /tmp/1.log;sleep 2;done
